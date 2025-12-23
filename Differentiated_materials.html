@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahayak - Advanced Worksheet Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --dark-bg: #121826;
+            --dark-surface: #1E293B;
+            --dark-card: #2D3748;
+            --dark-border: #374151;
+            --text-primary: #F3F4F6;
+            --text-secondary: #D1D5DB;
+            --text-muted: #9CA3AF;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Updated grade levels styling with equal areas */
+        .grade-levels {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .grade-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--dark-surface);
+            padding: 12px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-height: 50px;
+        }
+        
+        .grade-option:hover {
+            background: rgba(108, 99, 255, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .grade-option.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .grade-option input[type="checkbox"] {
+            display: none;
+        }
+        
+        .grade-option label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .worksheets-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .worksheet-card {
+            background: var(--dark-surface);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .worksheet-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .worksheet-grade {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .worksheet-preview-content {
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .worksheet-preview-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, var(--dark-surface));
+        }
+        
+        .download-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .download-options .btn {
+            flex: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--dark-border);
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            background: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .toggle-nav {
+            display: flex;
+            background: var(--dark-surface);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 30px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .toggle-option.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .card {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .section-title i {
+            color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--dark-border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: rgba(30, 41, 59, 0.5);
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, var(--dark-surface), #2a3446);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #2a3446, #323d52);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(to right, var(--accent), #2bc7d2);
+        }
+        
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .options-section {
+            margin: 25px 0;
+        }
+        
+        .option-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: border 0.3s;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+        
+        .file-info {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid var(--success);
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid var(--success);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark-surface);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--dark-border);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+        /* File input styling */
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-types {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid var(--error);
+        }
+        
+        .topic-input-container {
+            margin-bottom: 20px;
+        }
+        
+        .topic-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .topic-input input {
+            flex: 1;
+        }
+        
+        .subtopics-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .subtopic-tag {
+            background: rgba(54, 209, 220, 0.2);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subtopic-tag:hover {
+            background: rgba(54, 209, 220, 0.3);
+        }
+        
+        .subtopic-tag.selected {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+        
+        .subtopic-tag input {
+            display: none;
+        }
+        
+        .subtopic-tag label {
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .history-container {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            padding: 12px 15px;
+            background: var(--dark-surface);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .history-date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .preview-area {
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            min-height: 200px;
+            max-height: 500px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--dark-surface);
+            overflow-y: auto;
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 20px;
+        }
+        
+        .preview-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .preview-content {
+            display: none;
+        }
+        
+        .worksheet-preview {
+            background: var(--dark-card);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .worksheet-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .worksheet-title i {
+            color: var(--accent);
+        }
+        
+        .worksheet-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .worksheet-content p {
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--dark-surface);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .user-welcome {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--success);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin: 15px 0;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+        
+        .range-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .range-inputs input {
+            flex: 1;
+        }
+        
+        .range-separator {
+            color: var(--text-muted);
+        }
+        
+        .summary-content {
+            background: var(--dark-card);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .summary-content h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .summary-text {
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        .summary-text p {
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .question-type-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .question-type-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--dark-surface);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-height: 50px;
+        }
+        
+        .question-type-option:hover {
+            background: rgba(108, 99, 255, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .question-type-option.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .question-type-option input[type="checkbox"] {
+            display: none;
+        }
+        
+        .question-type-option label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        /* Grade level sections */
+        .grade-section {
+            margin-bottom: 20px;
+        }
+        
+        .grade-section-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .grade-levels {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .question-type-options {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grade-levels {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h1>Sahayak</h1>
+            </div>
+            <p class="subtitle">Create worksheets, summarize content, and generate learning materials with AI assistance</p>
+        </header>
+        
+        <div class="toggle-nav">
+            <div class="toggle-option active" data-section="summarizer">
+                <i class="fas fa-file-contract"></i>
+                PDF Summarizer
+            </div>
+            <div class="toggle-option" data-section="worksheet-pdf">
+                <i class="fas fa-file-upload"></i>
+                Worksheet from PDF
+            </div>
+            <div class="toggle-option" data-section="worksheet-topics">
+                <i class="fas fa-tasks"></i>
+                Worksheet from Topics
+            </div>
+        </div>
+        
+        <!-- Section 1: PDF Summarizer -->
+        <div class="content-section active" id="summarizer-section">
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-file-contract"></i>
+                    PDF Summarizer
+                </h2>
+                
+                <div class="upload-area" id="summarizerUploadArea">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p class="upload-text">Upload PDF to summarize</p>
+                    <div class="file-input-container">
+                        <button class="btn btn-full" id="summarizerBrowseBtn"><i class="fas fa-folder-open"></i> Select PDF</button>
+                        <input type="file" id="summarizerFileInput" class="file-input" accept=".pdf,.doc,.docx,.txt">
+                    </div>
+                    <p class="file-types">Supported formats: PDF, DOC, DOCX, TXT</p>
+                </div>
+                
+                <div class="file-info" id="summarizerFileInfo">
+                    <i class="fas fa-check-circle"></i> <strong>Selected file:</strong> <span id="summarizerFileName"></span>
+                </div>
+                
+                <div class="options-section">
+                    <div class="option-group">
+                        <label for="pageRange">Page Range to Summarize</label>
+                        <div class="range-inputs">
+                            <input type="number" id="pageStart" placeholder="Start page" min="1" value="1">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="pageEnd" placeholder="End page" min="1">
+                        </div>
+                        <p class="file-types">Leave end page empty to summarize until the end of document</p>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="summaryLength">Summary Length</label>
+                        <select id="summaryLength">
+                            <option value="short">Short (1-2 paragraphs)</option>
+                            <option value="medium" selected>Medium (3-4 paragraphs)</option>
+                            <option value="detailed">Detailed (5+ paragraphs)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-accent btn-full" id="summarizeBtn">
+                    <i class="fas fa-file-contract"></i> Summarize PDF
+                </button>
+                
+                <div class="loading" id="summarizerLoading">
+                    <div class="spinner"></div>
+                    <p>Analyzing and summarizing your PDF...</p>
+                    <p class="file-types">This may take a few moments depending on the document size</p>
+                </div>
+                
+                <div class="success-message" id="summarizerSuccess">
+                    <i class="fas fa-check-circle"></i> PDF summarized successfully!
+                </div>
+                
+                <div class="error-message" id="summarizerError">
+                    <i class="fas fa-exclamation-circle"></i> <span id="summarizerErrorText"></span>
+                </div>
+                
+                <div class="preview-area">
+                    <div class="preview-placeholder" id="summarizerPreviewPlaceholder">
+                        <i class="fas fa-file-alt"></i>
+                        <p>Upload a PDF to see the summary here.</p>
+                    </div>
+                    
+                    <div class="preview-content" id="summarizerPreviewContent">
+                        <!-- Summary content will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons" id="summarizerDownloadSection" style="display: none;">
+                    <a href="#" class="btn btn-full" id="downloadSummaryBtn" target="_blank">
+                        <i class="fas fa-download"></i> Download Summary
+                    </a>
+                    <button class="btn btn-secondary btn-full" id="copySummaryBtn">
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2: Worksheet Generator from PDF -->
+        <div class="content-section" id="worksheet-pdf-section">
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-file-upload"></i>
+                    Worksheet Generator (PDF)
+                </h2>
+                
+                <div class="upload-area" id="worksheetUploadArea">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p class="upload-text">Upload PDF to create worksheet</p>
+                    <div class="file-input-container">
+                        <button class="btn btn-full" id="worksheetBrowseBtn"><i class="fas fa-folder-open"></i> Select PDF</button>
+                        <input type="file" id="worksheetFileInput" class="file-input" accept=".pdf,.doc,.docx,.txt">
+                    </div>
+                    <p class="file-types">Supported formats: PDF, DOC, DOCX, TXT</p>
+                </div>
+                
+                <div class="file-info" id="worksheetFileInfo">
+                    <i class="fas fa-check-circle"></i> <strong>Selected file:</strong> <span id="worksheetFileName"></span>
+                </div>
+                
+                <div class="options-section">
+                    <div class="option-group">
+                        <label for="worksheetPageRange">Page Range for Worksheet</label>
+                        <div class="range-inputs">
+                            <input type="number" id="worksheetPageStart" placeholder="Start page" min="1" value="1">
+                            <span class="range-separator">to</span>
+                            <input type="number" id="worksheetPageEnd" placeholder="End page" min="1">
+                        </div>
+                        <p class="file-types">Leave end page empty to use until the end of document</p>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="questionCount">Number of Questions</label>
+                        <input type="number" id="questionCount" placeholder="Enter number of questions" min="1" max="50" value="10">
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Question Types</label>
+                        <div class="question-type-options">
+                            <div class="question-type-option selected" data-type="mcq">
+                                <input type="checkbox" id="questionTypeMcq" value="mcq" checked>
+                                <label for="questionTypeMcq">Multiple Choice Questions</label>
+                            </div>
+                            <div class="question-type-option selected" data-type="theory">
+                                <input type="checkbox" id="questionTypeTheory" value="theory" checked>
+                                <label for="questionTypeTheory">Theory Questions</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Target Grade Levels</label>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-graduation-cap"></i>
+                                Elementary & Middle School
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="k">
+                                    <input type="checkbox" id="grade-k" value="k">
+                                    <label for="grade-k">Kindergarten</label>
+                                </div>
+                                <div class="grade-option" data-grade="1">
+                                    <input type="checkbox" id="grade-1" value="1">
+                                    <label for="grade-1">Grade 1</label>
+                                </div>
+                                <div class="grade-option" data-grade="2">
+                                    <input type="checkbox" id="grade-2" value="2">
+                                    <label for="grade-2">Grade 2</label>
+                                </div>
+                                <div class="grade-option" data-grade="3">
+                                    <input type="checkbox" id="grade-3" value="3">
+                                    <label for="grade-3">Grade 3</label>
+                                </div>
+                                <div class="grade-option" data-grade="4">
+                                    <input type="checkbox" id="grade-4" value="4">
+                                    <label for="grade-4">Grade 4</label>
+                                </div>
+                                <div class="grade-option" data-grade="5">
+                                    <input type="checkbox" id="grade-5" value="5">
+                                    <label for="grade-5">Grade 5</label>
+                                </div>
+                                <div class="grade-option" data-grade="6">
+                                    <input type="checkbox" id="grade-6" value="6">
+                                    <label for="grade-6">Grade 6</label>
+                                </div>
+                                <div class="grade-option" data-grade="7">
+                                    <input type="checkbox" id="grade-7" value="7">
+                                    <label for="grade-7">Grade 7</label>
+                                </div>
+                                <div class="grade-option" data-grade="8">
+                                    <input type="checkbox" id="grade-8" value="8">
+                                    <label for="grade-8">Grade 8</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-user-graduate"></i>
+                                High School
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="9">
+                                    <input type="checkbox" id="grade-9" value="9">
+                                    <label for="grade-9">Grade 9</label>
+                                </div>
+                                <div class="grade-option" data-grade="10">
+                                    <input type="checkbox" id="grade-10" value="10">
+                                    <label for="grade-10">Grade 10</label>
+                                </div>
+                                <div class="grade-option" data-grade="11">
+                                    <input type="checkbox" id="grade-11" value="11">
+                                    <label for="grade-11">Grade 11</label>
+                                </div>
+                                <div class="grade-option" data-grade="12">
+                                    <input type="checkbox" id="grade-12" value="12">
+                                    <label for="grade-12">Grade 12</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-university"></i>
+                                College & University
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="freshman">
+                                    <input type="checkbox" id="grade-freshman" value="freshman">
+                                    <label for="grade-freshman">Freshman</label>
+                                </div>
+                                <div class="grade-option" data-grade="sophomore">
+                                    <input type="checkbox" id="grade-sophomore" value="sophomore">
+                                    <label for="grade-sophomore">Sophomore</label>
+                                </div>
+                                <div class="grade-option" data-grade="junior">
+                                    <input type="checkbox" id="grade-junior" value="junior">
+                                    <label for="grade-junior">Junior</label>
+                                </div>
+                                <div class="grade-option" data-grade="senior">
+                                    <input type="checkbox" id="grade-senior" value="senior">
+                                    <label for="grade-senior">Senior</label>
+                                </div>
+                                <div class="grade-option" data-grade="masters">
+                                    <input type="checkbox" id="grade-masters" value="masters">
+                                    <label for="grade-masters">Master's</label>
+                                </div>
+                                <div class="grade-option" data-grade="phd">
+                                    <input type="checkbox" id="grade-phd" value="phd">
+                                    <label for="grade-phd">PhD</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="difficulty">Differentiation Level</label>
+                        <select id="difficulty">
+                            <option value="slight">Slight differentiation (minor adjustments)</option>
+                            <option value="moderate" selected>Moderate differentiation (content adaptation)</option>
+                            <option value="significant">Significant differentiation (complete restructuring)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="output-format">Output Format</label>
+                        <select id="output-format">
+                            <option value="pdf" selected>PDF Document</option>
+                            <option value="docx">Word Document</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-accent btn-full" id="generateWorksheetBtn">
+                    <i class="fas fa-magic"></i> Generate Worksheet
+                </button>
+                
+                <div class="loading" id="worksheetLoading">
+                    <div class="spinner"></div>
+                    <p>Creating your worksheet from PDF...</p>
+                </div>
+                
+                <div class="success-message" id="worksheetSuccess">
+                    <i class="fas fa-check-circle"></i> Worksheet generated successfully!
+                </div>
+                
+                <div class="error-message" id="worksheetError">
+                    <i class="fas fa-exclamation-circle"></i> <span id="worksheetErrorText"></span>
+                </div>
+                
+                <div class="preview-area">
+                    <div class="preview-placeholder" id="worksheetPreviewPlaceholder">
+                        <i class="fas fa-file-alt"></i>
+                        <p>Upload a PDF to see the worksheet preview here.</p>
+                    </div>
+                    
+                    <div class="preview-content" id="worksheetPreviewContent">
+                        <!-- Worksheet preview will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons" id="worksheetDownloadSection" style="display: none;">
+                    <!-- Download buttons will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 3: Worksheet Generator from Topics -->
+        <div class="content-section" id="worksheet-topics-section">
+            <div class="card">
+                <h2 class="section-title">
+                    <i class="fas fa-tasks"></i>
+                    Worksheet Generator (Topics)
+                </h2>
+                
+                <div class="user-welcome">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-name">Welcome back, Teacher!</div>
+                </div>
+                
+                <div class="topic-input-container">
+                    <label for="mainTopic">Enter main topic (e.g. DSA, Python, JavaScript)</label>
+                    <div class="topic-input">
+                        <input type="text" id="mainTopic" placeholder="Enter a topic...">
+                        <button class="btn" id="fetchSubtopicsBtn">Fetch Subtopics</button>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Select Subtopics</label>
+                    <div class="subtopics-container" id="subtopicsContainer">
+                        <!-- Subtopics will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="options-section">
+                    <div class="option-group">
+                        <label for="topicQuestionCount">Number of Questions</label>
+                        <input type="number" id="topicQuestionCount" placeholder="Enter number of questions" min="1" max="50" value="10">
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Question Types</label>
+                        <div class="question-type-options">
+                            <div class="question-type-option selected" data-type="mcq">
+                                <input type="checkbox" id="topicQuestionTypeMcq" value="mcq" checked>
+                                <label for="topicQuestionTypeMcq">Multiple Choice Questions</label>
+                            </div>
+                            <div class="question-type-option selected" data-type="theory">
+                                <input type="checkbox" id="topicQuestionTypeTheory" value="theory" checked>
+                                <label for="topicQuestionTypeTheory">Theory Questions</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Target Grade Levels</label>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-graduation-cap"></i>
+                                Elementary & Middle School
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="k">
+                                    <input type="checkbox" id="topic-grade-k" value="k">
+                                    <label for="topic-grade-k">Kindergarten</label>
+                                </div>
+                                <div class="grade-option" data-grade="1">
+                                    <input type="checkbox" id="topic-grade-1" value="1">
+                                    <label for="topic-grade-1">Grade 1</label>
+                                </div>
+                                <div class="grade-option" data-grade="2">
+                                    <input type="checkbox" id="topic-grade-2" value="2">
+                                    <label for="topic-grade-2">Grade 2</label>
+                                </div>
+                                <div class="grade-option" data-grade="3">
+                                    <input type="checkbox" id="topic-grade-3" value="3">
+                                    <label for="topic-grade-3">Grade 3</label>
+                                </div>
+                                <div class="grade-option" data-grade="4">
+                                    <input type="checkbox" id="topic-grade-4" value="4">
+                                    <label for="topic-grade-4">Grade 4</label>
+                                </div>
+                                <div class="grade-option" data-grade="5">
+                                    <input type="checkbox" id="topic-grade-5" value="5">
+                                    <label for="topic-grade-5">Grade 5</label>
+                                </div>
+                                <div class="grade-option" data-grade="6">
+                                    <input type="checkbox" id="topic-grade-6" value="6">
+                                    <label for="topic-grade-6">Grade 6</label>
+                                </div>
+                                <div class="grade-option" data-grade="7">
+                                    <input type="checkbox" id="topic-grade-7" value="7">
+                                    <label for="topic-grade-7">Grade 7</label>
+                                </div>
+                                <div class="grade-option" data-grade="8">
+                                    <input type="checkbox" id="topic-grade-8" value="8">
+                                    <label for="topic-grade-8">Grade 8</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-user-graduate"></i>
+                                High School
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="9">
+                                    <input type="checkbox" id="topic-grade-9" value="9">
+                                    <label for="topic-grade-9">Grade 9</label>
+                                </div>
+                                <div class="grade-option" data-grade="10">
+                                    <input type="checkbox" id="topic-grade-10" value="10">
+                                    <label for="topic-grade-10">Grade 10</label>
+                                </div>
+                                <div class="grade-option" data-grade="11">
+                                    <input type="checkbox" id="topic-grade-11" value="11">
+                                    <label for="topic-grade-11">Grade 11</label>
+                                </div>
+                                <div class="grade-option" data-grade="12">
+                                    <input type="checkbox" id="topic-grade-12" value="12">
+                                    <label for="topic-grade-12">Grade 12</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-section">
+                            <div class="grade-section-title">
+                                <i class="fas fa-university"></i>
+                                College & University
+                            </div>
+                            <div class="grade-levels">
+                                <div class="grade-option" data-grade="freshman">
+                                    <input type="checkbox" id="topic-grade-freshman" value="freshman">
+                                    <label for="topic-grade-freshman">Freshman</label>
+                                </div>
+                                <div class="grade-option" data-grade="sophomore">
+                                    <input type="checkbox" id="topic-grade-sophomore" value="sophomore">
+                                    <label for="topic-grade-sophomore">Sophomore</label>
+                                </div>
+                                <div class="grade-option" data-grade="junior">
+                                    <input type="checkbox" id="topic-grade-junior" value="junior">
+                                    <label for="topic-grade-junior">Junior</label>
+                                </div>
+                                <div class="grade-option" data-grade="senior">
+                                    <input type="checkbox" id="topic-grade-senior" value="senior">
+                                    <label for="topic-grade-senior">Senior</label>
+                                </div>
+                                <div class="grade-option" data-grade="masters">
+                                    <input type="checkbox" id="topic-grade-masters" value="masters">
+                                    <label for="topic-grade-masters">Master's</label>
+                                </div>
+                                <div class="grade-option" data-grade="phd">
+                                    <input type="checkbox" id="topic-grade-phd" value="phd">
+                                    <label for="topic-grade-phd">PhD</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="topicDifficulty">Differentiation Level</label>
+                        <select id="topicDifficulty">
+                            <option value="slight">Slight differentiation (minor adjustments)</option>
+                            <option value="moderate" selected>Moderate differentiation (content adaptation)</option>
+                            <option value="significant">Significant differentiation (complete restructuring)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-accent btn-full" id="generateTopicWorksheetBtn">
+                    <i class="fas fa-play-circle"></i> Start Worksheet
+                </button>
+                
+                <div class="loading" id="topicWorksheetLoading">
+                    <div class="spinner"></div>
+                    <p>Generating your worksheet from topics...</p>
+                </div>
+                
+                <div class="success-message" id="topicWorksheetSuccess">
+                    <i class="fas fa-check-circle"></i> Worksheet generated successfully!
+                </div>
+                
+                <div class="error-message" id="topicWorksheetError">
+                    <i class="fas fa-exclamation-circle"></i> <span id="topicWorksheetErrorText"></span>
+                </div>
+                
+                <div class="worksheets-grid" id="topicWorksheetsGrid">
+                    <!-- Worksheets will be dynamically added here -->
+                </div>
+                
+                <div class="history-container">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i>
+                        View History
+                    </h3>
+                    <div class="history-item">
+                        <div class="history-title">Data Structures - Arrays & Linked Lists</div>
+                        <div class="history-date">Created: 2 days ago</div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-title">Python - Functions & Classes</div>
+                        <div class="history-date">Created: 1 week ago</div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-title">JavaScript - DOM Manipulation</div>
+                        <div class="history-date">Created: 2 weeks ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Sahayak &copy; 2023 | Differentiated Instruction Made Simple</p>
+        </footer>
+    </div>
+
+    <script>
+        // Backend API URL
+
+        const API_BASE_URL = window.location.hostname.includes('localhost') ||
+                     window.location.hostname.includes('127.0.0.1')
+  ? 'http://127.0.0.5:8000'
+  : 'https://sahayak-backend.onrender.com';
+
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up toggle navigation
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            toggleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Update active toggle option
+                    toggleOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${targetSection}-section`) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Set up grade selection
+            function setupGradeSelection(containerSelector) {
+                const gradeOptions = document.querySelectorAll(`${containerSelector} .grade-option`);
+                
+                gradeOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    });
+                });
+            }
+            
+            // Set up question type selection
+            function setupQuestionTypeSelection(containerSelector) {
+                const questionTypeOptions = document.querySelectorAll(`${containerSelector} .question-type-option`);
+                
+                questionTypeOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    });
+                });
+            }
+            
+            // Set up subtopic selection
+            function setupSubtopicSelection() {
+                const subtopicTags = document.querySelectorAll('.subtopic-tag');
+                
+                subtopicTags.forEach(tag => {
+                    tag.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    });
+                });
+            }
+            
+            // Initialize grade and question type selection
+            setupGradeSelection('#worksheet-pdf-section');
+            setupGradeSelection('#worksheet-topics-section');
+            setupQuestionTypeSelection('#worksheet-pdf-section');
+            setupQuestionTypeSelection('#worksheet-topics-section');
+            
+            // Set up file uploads for summarizer
+            const summarizerUploadArea = document.getElementById('summarizerUploadArea');
+            const summarizerFileInput = document.getElementById('summarizerFileInput');
+            const summarizerBrowseBtn = document.getElementById('summarizerBrowseBtn');
+            const summarizerFileName = document.getElementById('summarizerFileName');
+            const summarizerFileInfo = document.getElementById('summarizerFileInfo');
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            const summarizerLoading = document.getElementById('summarizerLoading');
+            const summarizerSuccess = document.getElementById('summarizerSuccess');
+            const summarizerError = document.getElementById('summarizerError');
+            const summarizerErrorText = document.getElementById('summarizerErrorText');
+            const summarizerPreviewPlaceholder = document.getElementById('summarizerPreviewPlaceholder');
+            const summarizerPreviewContent = document.getElementById('summarizerPreviewContent');
+            const summarizerDownloadSection = document.getElementById('summarizerDownloadSection');
+            const downloadSummaryBtn = document.getElementById('downloadSummaryBtn');
+            const copySummaryBtn = document.getElementById('copySummaryBtn');
+            
+            let summarizerFile = null;
+            let currentSummaryResult = null;
+            
+            // Summarizer file upload handlers
+            summarizerUploadArea.addEventListener('click', () => summarizerFileInput.click());
+            summarizerBrowseBtn.addEventListener('click', () => summarizerFileInput.click());
+            
+            summarizerFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    summarizerFile = this.files[0];
+                    summarizerFileName.textContent = summarizerFile.name;
+                    summarizerFileInfo.style.display = 'block';
+                    summarizerError.style.display = 'none';
+                }
+            });
+            
+            summarizerUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                summarizerUploadArea.classList.add('dragover');
+            });
+            
+            summarizerUploadArea.addEventListener('dragleave', () => {
+                summarizerUploadArea.classList.remove('dragover');
+            });
+            
+            summarizerUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                summarizerUploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    summarizerFileInput.files = e.dataTransfer.files;
+                    summarizerFile = e.dataTransfer.files[0];
+                    summarizerFileName.textContent = summarizerFile.name;
+                    summarizerFileInfo.style.display = 'block';
+                    summarizerError.style.display = 'none';
+                }
+            });
+            
+            // Summarize button handler
+            summarizeBtn.addEventListener('click', async function() {
+                if (!summarizerFile) {
+                    showSummarizerError('Please upload a PDF file first.');
+                    return;
+                }
+                
+                const summaryLength = document.getElementById('summaryLength').value;
+                const pageStart = document.getElementById('pageStart').value;
+                const pageEnd = document.getElementById('pageEnd').value;
+                
+                summarizerLoading.style.display = 'block';
+                summarizerError.style.display = 'none';
+                summarizerSuccess.style.display = 'none';
+                summarizerDownloadSection.style.display = 'none';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', summarizerFile);
+                    formData.append('summary_length', summaryLength);
+                    formData.append('page_start', pageStart);
+                    if (pageEnd) {
+                        formData.append('page_end', pageEnd);
+                    }
+                    
+                    const response = await fetch(`${API_BASE_URL}/summarize-pdf/`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    currentSummaryResult = result;
+                    
+                    summarizerLoading.style.display = 'none';
+                    summarizerSuccess.style.display = 'block';
+                    summarizerPreviewPlaceholder.style.display = 'none';
+                    summarizerPreviewContent.style.display = 'block';
+                    summarizerDownloadSection.style.display = 'flex';
+                    
+                    // Update download button
+                    downloadSummaryBtn.href = `${API_BASE_URL}${result.download_url}`;
+                    
+                    // Display the summary content
+                    summarizerPreviewContent.innerHTML = `
+                        <div class="summary-content">
+                            <h3><i class="fas fa-file-contract"></i> Document Summary</h3>
+                            <div class="summary-text">
+                                ${result.summary.replace(/\n/g, '</p><p>')}
+                            </div>
+                        </div>
+                        <div class="worksheet-preview">
+                            <div class="worksheet-title">
+                                <i class="fas fa-info-circle"></i>
+                                Summary Details
+                            </div>
+                            <div class="worksheet-content">
+                                <p><strong>Original File:</strong> ${summarizerFile.name}</p>
+                                <p><strong>Summary Length:</strong> ${summaryLength}</p>
+                                <p><strong>Pages:</strong> ${pageStart}${pageEnd ? ` to ${pageEnd}` : ' to end'}</p>
+                                <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showSummarizerError('Failed to summarize PDF: ' + error.message);
+                }
+            });
+            
+            // Copy summary to clipboard
+            copySummaryBtn.addEventListener('click', async function() {
+                if (!currentSummaryResult) {
+                    return;
+                }
+                
+                try {
+                    await navigator.clipboard.writeText(currentSummaryResult.summary);
+                    const originalText = copySummaryBtn.innerHTML;
+                    copySummaryBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        copySummaryBtn.innerHTML = originalText;
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+            });
+            
+            function showSummarizerError(message) {
+                summarizerErrorText.textContent = message;
+                summarizerError.style.display = 'block';
+                summarizerSuccess.style.display = 'none';
+                summarizerLoading.style.display = 'none';
+                summarizerDownloadSection.style.display = 'none';
+            }
+            
+            // Set up file uploads for worksheet generator from PDF
+            const worksheetUploadArea = document.getElementById('worksheetUploadArea');
+            const worksheetFileInput = document.getElementById('worksheetFileInput');
+            const worksheetBrowseBtn = document.getElementById('worksheetBrowseBtn');
+            const worksheetFileName = document.getElementById('worksheetFileName');
+            const worksheetFileInfo = document.getElementById('worksheetFileInfo');
+            const generateWorksheetBtn = document.getElementById('generateWorksheetBtn');
+            const worksheetLoading = document.getElementById('worksheetLoading');
+            const worksheetSuccess = document.getElementById('worksheetSuccess');
+            const worksheetError = document.getElementById('worksheetError');
+            const worksheetErrorText = document.getElementById('worksheetErrorText');
+            const worksheetPreviewPlaceholder = document.getElementById('worksheetPreviewPlaceholder');
+            const worksheetPreviewContent = document.getElementById('worksheetPreviewContent');
+            const worksheetDownloadSection = document.getElementById('worksheetDownloadSection');
+            
+            let worksheetFile = null;
+            let currentWorksheetResult = null;
+            
+            // Worksheet file upload handlers
+            worksheetUploadArea.addEventListener('click', () => worksheetFileInput.click());
+            worksheetBrowseBtn.addEventListener('click', () => worksheetFileInput.click());
+            
+            worksheetFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    worksheetFile = this.files[0];
+                    worksheetFileName.textContent = worksheetFile.name;
+                    worksheetFileInfo.style.display = 'block';
+                    worksheetError.style.display = 'none';
+                }
+            });
+            
+            worksheetUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                worksheetUploadArea.classList.add('dragover');
+            });
+            
+            worksheetUploadArea.addEventListener('dragleave', () => {
+                worksheetUploadArea.classList.remove('dragover');
+            });
+            
+            worksheetUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                worksheetUploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    worksheetFileInput.files = e.dataTransfer.files;
+                    worksheetFile = e.dataTransfer.files[0];
+                    worksheetFileName.textContent = worksheetFile.name;
+                    worksheetFileInfo.style.display = 'block';
+                    worksheetError.style.display = 'none';
+                }
+            });
+            
+            // Generate worksheet button handler - UPDATED FOR NEW ENDPOINT
+            generateWorksheetBtn.addEventListener('click', async function() {
+                if (!worksheetFile) {
+                    showWorksheetError('Please upload a PDF file first.');
+                    return;
+                }
+                
+                const pageStart = document.getElementById('worksheetPageStart').value;
+                const pageEnd = document.getElementById('worksheetPageEnd').value;
+                const questionCount = document.getElementById('questionCount').value;
+                
+                if (!questionCount || questionCount < 1 || questionCount > 50) {
+                    showWorksheetError('Please enter a valid number of questions (1-50).');
+                    return;
+                }
+                
+                const selectedQuestionTypes = Array.from(document.querySelectorAll('#worksheet-pdf-section .question-type-options input:checked'))
+                    .map(chk => chk.value);
+                    
+                if (selectedQuestionTypes.length === 0) {
+                    showWorksheetError('Please select at least one question type.');
+                    return;
+                }
+                
+                const selectedGrades = Array.from(document.querySelectorAll('#worksheet-pdf-section .grade-levels input:checked'))
+                    .map(chk => chk.value);
+                    
+                if (selectedGrades.length === 0) {
+                    showWorksheetError('Please select at least one grade level.');
+                    return;
+                }
+                
+                const difficulty = document.getElementById('difficulty').value;
+                const outputFormat = document.getElementById('output-format').value;
+                
+                worksheetLoading.style.display = 'block';
+                worksheetError.style.display = 'none';
+                worksheetSuccess.style.display = 'none';
+                worksheetDownloadSection.style.display = 'none';
+                worksheetPreviewContent.innerHTML = '';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', worksheetFile);
+                    formData.append('page_start', pageStart);
+                    if (pageEnd) {
+                        formData.append('page_end', pageEnd);
+                    }
+                    formData.append('question_count', questionCount);
+                    formData.append('question_types', selectedQuestionTypes.join(','));
+                    formData.append('grades', selectedGrades.join(','));
+                    formData.append('difficulty', difficulty);
+                    formData.append('output_format', outputFormat);
+                    
+                    // Use the new endpoint
+                    const response = await fetch(`${API_BASE_URL}/generate-worksheets/`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    currentWorksheetResult = result;
+                    
+                    worksheetLoading.style.display = 'none';
+                    worksheetSuccess.style.display = 'block';
+                    worksheetPreviewPlaceholder.style.display = 'none';
+                    worksheetPreviewContent.style.display = 'block';
+                    worksheetDownloadSection.style.display = 'flex';
+                    
+                    // Display worksheets with download options
+                    worksheetPreviewContent.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i> ${result.message}
+                        </div>
+                        <div class="worksheets-grid">
+                            ${Object.entries(result.worksheets).map(([grade, worksheet]) => `
+                                <div class="worksheet-card">
+                                    <div class="worksheet-header">
+                                        <h4>Grade ${grade} Worksheet</h4>
+                                        <span class="worksheet-grade">Grade ${grade}</span>
+                                    </div>
+                                    <div class="worksheet-preview-content">
+                                        ${worksheet.preview}
+                                    </div>
+                                    <div class="download-options">
+                                        <a href="${API_BASE_URL}${worksheet.pdf}" class="btn" target="_blank">
+                                            <i class="fas fa-file-pdf"></i> PDF
+                                        </a>
+                                        <a href="${API_BASE_URL}${worksheet.docx}" class="btn btn-secondary" target="_blank">
+                                            <i class="fas fa-file-word"></i> DOCX
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showWorksheetError('Failed to generate worksheets: ' + error.message);
+                }
+            });
+            
+            function showWorksheetError(message) {
+                worksheetErrorText.textContent = message;
+                worksheetError.style.display = 'block';
+                worksheetSuccess.style.display = 'none';
+                worksheetLoading.style.display = 'none';
+                worksheetDownloadSection.style.display = 'none';
+            }
+            
+            // Set up worksheet generator from topics
+            const mainTopicInput = document.getElementById('mainTopic');
+            const fetchSubtopicsBtn = document.getElementById('fetchSubtopicsBtn');
+            const subtopicsContainer = document.getElementById('subtopicsContainer');
+            const generateTopicWorksheetBtn = document.getElementById('generateTopicWorksheetBtn');
+            const topicWorksheetLoading = document.getElementById('topicWorksheetLoading');
+            const topicWorksheetSuccess = document.getElementById('topicWorksheetSuccess');
+            const topicWorksheetError = document.getElementById('topicWorksheetError');
+            const topicWorksheetErrorText = document.getElementById('topicWorksheetErrorText');
+            const topicWorksheetsGrid = document.getElementById('topicWorksheetsGrid');
+            
+            let currentTopicWorksheetResult = null;
+            
+            // Fetch subtopics button handler
+            fetchSubtopicsBtn.addEventListener('click', async function() {
+                const mainTopic = mainTopicInput.value.trim();
+                if (!mainTopic) {
+                    showTopicWorksheetError('Please enter a main topic first.');
+                    return;
+                }
+                
+                // Clear previous subtopics
+                subtopicsContainer.innerHTML = '';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate-subtopics/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            main_topic: mainTopic
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Add subtopic checkboxes
+                    result.subtopics.forEach(subtopic => {
+                        const subtopicId = subtopic.toLowerCase().replace(/\s+/g, '-');
+                        const subtopicElement = document.createElement('div');
+                        subtopicElement.className = 'subtopic-tag selected';
+                        subtopicElement.innerHTML = `
+                            <input type="checkbox" id="subtopic-${subtopicId}" value="${subtopic}" checked>
+                            <label for="subtopic-${subtopicId}">${subtopic}</label>
+                        `;
+                        subtopicsContainer.appendChild(subtopicElement);
+                    });
+                    
+                    // Set up subtopic selection
+                    setupSubtopicSelection();
+                    
+                    topicWorksheetError.style.display = 'none';
+                    
+                } catch (error) {
+                    showTopicWorksheetError('Failed to fetch subtopics: ' + error.message);
+                }
+            });
+            
+            // Generate worksheet from topics button handler - UPDATED
+            // Generate worksheet from topics button handler - FIXED VERSION
+            generateTopicWorksheetBtn.addEventListener('click', async function() {
+                const mainTopic = mainTopicInput.value.trim();
+                if (!mainTopic) {
+                    showTopicWorksheetError('Please enter a main topic first.');
+                    return;
+                }
+                
+                const selectedSubtopics = Array.from(document.querySelectorAll('.subtopic-tag input:checked'))
+                    .map(input => input.value);
+                    
+                if (selectedSubtopics.length === 0) {
+                    showTopicWorksheetError('Please select at least one subtopic.');
+                    return;
+                }
+                
+                const selectedQuestionTypes = Array.from(document.querySelectorAll('#worksheet-topics-section .question-type-options input:checked'))
+                    .map(chk => chk.value);
+                    
+                if (selectedQuestionTypes.length === 0) {
+                    showTopicWorksheetError('Please select at least one question type.');
+                    return;
+                }
+                
+                const selectedGrades = Array.from(document.querySelectorAll('#worksheet-topics-section .grade-levels input:checked'))
+                    .map(chk => chk.value);
+                    
+                if (selectedGrades.length === 0) {
+                    showTopicWorksheetError('Please select at least one grade level.');
+                    return;
+                }
+                
+                const difficulty = document.getElementById('topicDifficulty').value;
+                const outputFormat = 'pdf';
+                
+                topicWorksheetLoading.style.display = 'block';
+                topicWorksheetError.style.display = 'none';
+                topicWorksheetSuccess.style.display = 'none';
+                topicWorksheetsGrid.innerHTML = '';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('main_topic', mainTopic);
+                    formData.append('subject', 'General'); // Add subject field (required by backend)
+                    formData.append('subtopics', selectedSubtopics.join(','));
+                    formData.append('grades', selectedGrades.join(','));
+                    formData.append('difficulty', difficulty);
+                    formData.append('question_types', selectedQuestionTypes.join(',')); // Fixed: use question_types instead of question_count
+                    formData.append('output_format', outputFormat);
+                    
+                    console.log('Sending form data:', {
+                        main_topic: mainTopic,
+                        subject: 'General',
+                        subtopics: selectedSubtopics.join(','),
+                        grades: selectedGrades.join(','),
+                        difficulty: difficulty,
+                        question_types: selectedQuestionTypes.join(','),
+                        output_format: outputFormat
+                    });
+                    
+                    const response = await fetch(`${API_BASE_URL}/generate-from-topics/`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    currentTopicWorksheetResult = result;
+                    
+                    topicWorksheetLoading.style.display = 'none';
+                    topicWorksheetSuccess.style.display = 'block';
+                    
+                    // Display worksheets
+                    topicWorksheetsGrid.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i> ${result.message || 'Worksheets generated successfully!'}
+                        </div>
+                        <div class="worksheets-grid">
+                            ${Object.entries(result.worksheets).map(([grade, worksheet]) => `
+                                <div class="worksheet-card">
+                                    <div class="worksheet-header">
+                                        <h4>Grade ${grade} Worksheet</h4>
+                                        <span class="worksheet-grade">Grade ${grade}</span>
+                                    </div>
+                                    <div class="worksheet-preview-content">
+                                        ${worksheet.preview}
+                                    </div>
+                                    <div class="download-options">
+                                        <a href="${API_BASE_URL}${worksheet.pdf}" class="btn" target="_blank">
+                                            <i class="fas fa-file-pdf"></i> PDF
+                                        </a>
+                                        <a href="${API_BASE_URL}${worksheet.docx}" class="btn btn-secondary" target="_blank">
+                                            <i class="fas fa-file-word"></i> DOCX
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    // Add to history
+                    const historyContainer = document.querySelector('.history-container');
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div class="history-title">${mainTopic} - ${selectedSubtopics.slice(0, 2).join(' & ')}</div>
+                        <div class="history-date">Created: Just now</div>
+                    `;
+                    historyContainer.insertBefore(historyItem, historyContainer.firstChild);
+                    
+                } catch (error) {
+                    showTopicWorksheetError('Failed to generate worksheets: ' + error.message);
+                }
+            });
+            
+            function showTopicWorksheetError(message) {
+                topicWorksheetErrorText.textContent = message;
+                topicWorksheetError.style.display = 'block';
+                topicWorksheetSuccess.style.display = 'none';
+                topicWorksheetLoading.style.display = 'none';
+                topicWorksheetsGrid.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

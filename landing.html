@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahayak - AI Teaching Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f1f5f9;
+            --text: #94a3b8;
+            --text-light: #cbd5e1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: white;
+            font-weight: 700;
+        }
+        
+        .navbar {
+            background-color: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(to bottom, var(--darker), var(--dark));
+            padding: 6rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15), transparent 30%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+        }
+        
+        .feature-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.7));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 70, 229, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .demo-container {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.7));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-area {
+            background: rgba(2, 6, 23, 0.5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .output-area {
+            background: rgba(2, 6, 23, 0.5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            min-height: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .form-control, .form-select {
+            background-color: rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(15, 23, 42, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            color: white;
+        }
+        
+        footer {
+            background: var(--dark);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .language-selector {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+        }
+        
+        .glow {
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .placeholder-page {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .placeholder-content {
+            max-width: 600px;
+            padding: 2rem;
+        }
+        
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Profile dropdown styles */
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dropdown-menu {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            color: var(--text-light);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+            color: white;
+        }
+        
+        .dropdown-divider {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 0 2rem;
+            }
+            
+            .display-4 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chalkboard-teacher me-2 gradient-text"></i>
+                <span class="fw-bold">Sahayak</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#demo">Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary" href="#try-now">Try Now</a>
+                    </li>
+                    <!-- Authentication Buttons -->
+                    <li class="nav-item ms-2 d-none" id="auth-buttons">
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-light" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                            <a class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a>
+                        </div>
+                    </li>
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown ms-2 d-none" id="user-profile">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%236366f1'/><text x='16' y='22' font-family='Arial' font-size='14' text-anchor='middle' fill='white'>U</text></svg>" class="profile-img me-2" alt="User Profile">
+                            <span>User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content feature-card">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Login to Sahayak</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none">Forgot your password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content feature-card">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Create an Account</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="First name">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Last name">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="signupEmail" placeholder="name@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="signupPassword" placeholder="Create a password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms">
+                            <label class="form-check-label" for="agreeTerms">I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a></label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of the HTML content remains the same -->
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">AI Teaching Assistant for <span class="gradient-text">Multi-Grade Classrooms</span></h1>
+                    <p class="lead mb-4">Empowering teachers in under-resourced schools with AI-powered tools for hyper-local content, differentiated learning, and time-saving automation.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#demo" class="btn btn-primary btn-lg px-4">View Demo</a>
+                        <a href="#features" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%230f172a'/><path d='M200,50 L250,120 L320,100 L280,180 L320,250 L240,240 L200,320 L160,240 L80,250 L120,180 L80,100 L150,120 Z' fill='none' stroke='%236366f1' stroke-width='8'/><circle cx='200' cy='150' r='40' fill='%2310b981' opacity='0.7'/></svg>" class="img-fluid" alt="Sahayak AI Assistant">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title mx-auto">How Sahayak Helps Teachers</h2>
+                <p class="lead">Designed specifically for multi-grade classrooms with limited resources</p>
+            </div>
+            
+             <div class="feature-grid">
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Differentiated Materials</h4>
+                    <p>Create multiple versions of worksheets from textbook pages tailored to different grade levels.</p>
+                    <a href="/differentiated-materials" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Knowledge Base</h4>
+                    <p>Get simple explanations for complex concepts with local language support and relatable analogies.</p>
+                    <a href="/knowledge-base" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Visual Aids</h4>
+                    <p>Create simple line drawings and charts that can be easily replicated on blackboards.</p>
+                    <a href="/blackboard-diagrams" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Educational Games</h4>
+                    <p>Generate fun learning activities and games tailored to your curriculum and available resources.</p>
+                    <a href="/fun-activities" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Lesson Planning</h4>
+                    <p>AI-powered weekly planners that structure activities and save teachers valuable time.</p>
+                    <a href="/lesson-plan" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Student Progress Tracking</h4>
+                    <p>Monitor student performance through interactive charts and detailed progress reports.</p>
+                    <a href="/student-progress" class="btn btn-sm btn-outline-primary mt-3">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="py-5 bg-dark">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold section-title mx-auto">See Sahayak in Action</h2>
+                <p class="lead">Experience how our AI assistant works with these interactive demos</p>
+            </div>
+            
+            <div class="demo-container">
+                <h4 class="mb-4 glow">AI Lesson Planning</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-area">
+                            <div class="mb-3">
+                                <label class="form-label">Select Grade Level</label>
+                                <select class="form-select">
+                                    <option>Grade 1</option>
+                                    <option>Grade 2</option>
+                                    <option>Grade 3</option>
+                                    <option>Grade 4</option>
+                                    <option>Grade 5</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Subject</label>
+                                <select class="form-select">
+                                    <option>Mathematics</option>
+                                    <option>Science</option>
+                                    <option>Language</option>
+                                    <option>Social Studies</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Topic</label>
+                                <input type="text" class="form-control" placeholder="E.g., Addition, Water Cycle, etc.">
+                            </div>
+                            <button class="btn btn-primary w-100">Generate Lesson Plan</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="output-area">
+                            <h5>Sample Lesson Plan Output:</h5>
+                            <ul class="mt-3">
+                                <li>15-minute introduction with local examples</li>
+                                <li>3 differentiated activity stations</li>
+                                <li>Visual aids for concept reinforcement</li>
+                                <li>Assessment rubric for multi-level evaluation</li>
+                                <li>Suggested educational games</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-container">
+                <h4 class="mb-4 glow">Progress Tracking Dashboard</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-area">
+                            <div class="mb-3">
+                                <label class="form-label">Select Student</label>
+                                <select class="form-select">
+                                    <option>Rahul Sharma</option>
+                                    <option>Priya Patel</option>
+                                    <option>Amit Kumar</option>
+                                    <option>Sneha Singh</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Subject</label>
+                                <select class="form-select">
+                                    <option>All Subjects</option>
+                                    <option>Mathematics</option>
+                                    <option>Science</option>
+                                    <option>Language</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Time Period</label>
+                                <select class="form-select">
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>This semester</option>
+                                    <option>All time</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100">View Progress Report</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="output-area">
+                            <h5>Sample Progress Report:</h5>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Mathematics</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar" style="width: 75%"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Science</span>
+                                    <span>82%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar" style="width: 82%"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Language</span>
+                                    <span>68%</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar" style="width: 68%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-container">
+                <h4 class="mb-4 glow">Audio-Assisted Learning</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-area">
+                            <div class="mb-3">
+                                <label class="form-label">Select Content Type</label>
+                                <select class="form-select">
+                                    <option>Story</option>
+                                    <option>Lesson</option>
+                                    <option>Instructions</option>
+                                    <option>Worksheet</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Language</label>
+                                <select class="form-select">
+                                    <option>Hindi</option>
+                                    <option>English</option>
+                                    <option>Marathi</option>
+                                    <option>Tamil</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Text to Convert to Audio</label>
+                                <textarea class="form-control" rows="3" placeholder="Paste text here or upload a document"></textarea>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary w-50">Generate Audio</button>
+                                <button class="btn btn-outline-primary w-50">Upload Document</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="output-area">
+                            <h5>Audio Player</h5>
+                            <div class="mt-4 text-center">
+                                <i class="fas fa-play-circle fs-1 text-primary mb-3"></i>
+                                <p>Generated audio will appear here</p>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <button class="btn btn-sm btn-outline-light"><i class="fas fa-download me-1"></i> Download</button>
+                                    <button class="btn btn-sm btn-outline-light"><i class="fas fa-share-alt me-1"></i> Share</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-center fw-bold section-title mx-auto mb-5">About Sahayak</h2>
+                    
+                    <div class="feature-card">
+                        <h4 class="fw-bold mb-3">Our Mission</h4>
+                        <p>To empower teachers with AI tools that reduce their workload while enhancing the learning experience for students across different grade levels and learning abilities.</p>
+                        
+                        <h4 class="fw-bold mt-4">How It Works</h4>
+                        <p>Sahayak leverages Google's Gemini AI models to understand teacher needs and generate relevant educational content. The platform works even with limited internet connectivity and supports multiple Indian languages.</p>
+                        
+                        <h4 class="fw-bold mt-4">For Teachers, By Teachers</h4>
+                        <p>Our development team has worked closely with educators from rural schools across India to ensure Sahayak addresses real classroom challenges and is intuitive to use, even for those with limited technology experience.</p>
+                        
+                        <h4 class="fw-bold mt-4">Offline Capability</h4>
+                        <p>Sahayak works seamlessly even without internet access. Download materials when connected and access them anytime, anywhere - perfect for schools with unreliable internet connectivity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Try Now Section -->
+    <section id="try-now" class="py-5 bg-dark">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="placeholder-page">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h2 class="fw-bold mb-3">Try Sahayak Today</h2>
+                            <p class="lead mb-4">Get started with our AI teaching assistant and transform your classroom experience.</p>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="feature-card h-100">
+                                        <h4 class="fw-bold mb-3">Free Trial</h4>
+                                        <p>Experience Sahayak with our 30-day free trial. No credit card required.</p>
+                                        <button class="btn btn-primary w-100 mt-3">Start Free Trial</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="feature-card h-100">
+                                        <h4 class="fw-bold mb-3">Schedule Demo</h4>
+                                        <p>Book a personalized demo with our education specialists.</p>
+                                        <button class="btn btn-outline-primary w-100 mt-3">Book a Demo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="mb-3">Sahayak</h5>
+                    <p>AI Teaching Assistant for Multi-Grade Classrooms</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-light"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Product</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#features" class="text-decoration-none text-light">Features</a></li>
+                        <li class="mb-2"><a href="#demo" class="text-decoration-none text-light">Demo</a></li>
+                        <li class="mb-2"><a href="#pricing" class="text-decoration-none text-light">Pricing</a></li>
+                        <li class="mb-2"><a href="#api" class="text-decoration-none text-light">API</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#documentation" class="text-decoration-none text-light">Documentation</a></li>
+                        <li class="mb-2"><a href="#tutorials" class="text-decoration-none text-light">Tutorials</a></li>
+                        <li class="mb-2"><a href="#blog" class="text-decoration-none text-light">Blog</a></li>
+                        <li class="mb-2"><a href="#support" class="text-decoration-none text-light">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <p><i class="fas fa-envelope me-2"></i> email@sahayak.org</p>
+                    <p><i class="fas fa-phone me-2"></i> +91 98765 43210</p>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-light btn-sm"><i class="fas fa-download me-1"></i> Offline App</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p>&copy; 2023 Sahayak. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Placeholder Pages (hidden by default) -->
+    <div id="pricing" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Pricing</h2>
+                <p class="lead mb-4">Affordable plans designed for educational institutions of all sizes.</p>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Basic</h4>
+                            <p class="h2 gradient-text fw-bold">Free</p>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Basic lesson planning</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 5 worksheets per month</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Community support</li>
+                            </ul>
+                            <button class="btn btn-primary w-100 mt-3">Get Started</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Pro</h4>
+                            <p class="h2 gradient-text fw-bold">₹499<span class="h6 text-light">/month</span></p>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Advanced lesson planning</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited worksheets</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Progress tracking</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                            </ul>
+                            <button class="btn btn-primary w-100 mt-3">Subscribe</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">School</h4>
+                            <p class="h2 gradient-text fw-bold">Custom</p>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> All Pro features</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Multi-teacher accounts</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> School-wide analytics</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dedicated support</li>
+                            </ul>
+                            <button class="btn btn-primary w-100 mt-3">Contact Sales</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="api" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h2 class="fw-bold mb-3">API Documentation</h2>
+                <p class="lead mb-4">Integrate Sahayak's AI capabilities into your own educational applications.</p>
+                <div class="feature-card">
+                    <h4 class="fw-bold mb-3">Coming Soon</h4>
+                    <p>Our API documentation is currently under development. Please check back later or contact us for early access.</p>
+                    <button class="btn btn-primary mt-3">Request Early Access</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="documentation" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Documentation</h2>
+                <p class="lead mb-4">Comprehensive guides to help you get the most out of Sahayak.</p>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Getting Started</h4>
+                            <p>Learn how to set up your account and create your first lesson plan.</p>
+                            <button class="btn btn-outline-primary w-100 mt-3">Read Guide</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Best Practices</h4>
+                            <p>Tips and strategies for using Sahayak effectively in multi-grade classrooms.</p>
+                            <button class="btn btn-outline-primary w-100 mt-3">Read Guide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tutorials" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Video Tutorials</h2>
+                <p class="lead mb-4">Watch step-by-step tutorials to master Sahayak's features.</p>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <div class="ratio ratio-16x9 mb-3">
+                                <div class="bg-dark rounded d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-play-circle fs-1 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold">Creating Your First Lesson Plan</h5>
+                            <p class="small">5 min</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <div class="ratio ratio-16x9 mb-3">
+                                <div class="bg-dark rounded d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-play-circle fs-1 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold">Differentiated Worksheets</h5>
+                            <p class="small">7 min</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-card h-100">
+                            <div class="ratio ratio-16x9 mb-3">
+                                <div class="bg-dark rounded d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-play-circle fs-1 text-primary"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold">Tracking Student Progress</h5>
+                            <p class="small">6 min</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-blog"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Blog</h2>
+                <p class="lead mb-4">Insights, stories, and best practices from educators using Sahayak.</p>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Transforming Rural Education with AI</h4>
+                            <p class="text-muted small">October 15, 2023</p>
+                            <p>How Sahayak is helping teachers in remote areas create engaging learning experiences.</p>
+                            <button class="btn btn-outline-primary mt-3">Read More</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">5 Strategies for Multi-Grade Teaching</h4>
+                            <p class="text-muted small">September 28, 2023</p>
+                            <p>Practical tips from experienced teachers on managing classrooms with multiple grade levels.</p>
+                            <button class="btn btn-outline-primary mt-3">Read More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="support" class="d-none">
+        <div class="placeholder-page">
+            <div class="placeholder-content">
+                <div class="placeholder-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Support Center</h2>
+                <p class="lead mb-4">We're here to help you succeed with Sahayak.</p>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">FAQs</h4>
+                            <p>Find answers to commonly asked questions about using Sahayak.</p>
+                            <button class="btn btn-outline-primary w-100 mt-3">Browse FAQs</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card h-100">
+                            <h4 class="fw-bold mb-3">Contact Support</h4>
+                            <p>Can't find what you're looking for? Our team is ready to help.</p>
+                            <button class="btn btn-outline-primary w-100 mt-3">Contact Us</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-language me-1"></i> English
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Hindi</a></li>
+                <li><a class="dropdown-item" href="#">Marathi</a></li>
+                <li><a class="dropdown-item" href="#">Tamil</a></li>
+                <li><a class="dropdown-item" href="#">Telugu</a></li>
+                <li><a class="dropdown-item" href="#">Bengali</a></li>
+                <li><a class="dropdown-item" href="#">Gujarati</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple JavaScript to handle placeholder page navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all footer links
+            const footerLinks = document.querySelectorAll('footer a');
+            
+            footerLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetPage = document.getElementById(targetId);
+                    
+                    if (targetPage) {
+                        // Hide all pages
+                        document.querySelectorAll('.placeholder-page').forEach(page => {
+                            page.parentElement.classList.add('d-none');
+                        });
+                        
+                        // Show target page
+                        targetPage.classList.remove('d-none');
+                        
+                        // Scroll to top
+                        window.scrollTo(0, 0);
+                    }
+                });
+            });
+            
+            // Add functionality to "Try Now" button in navbar
+            document.querySelector('a[href="#try-now"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('try-now').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Authentication state management
+            const authButtons = document.getElementById('auth-buttons');
+            const userProfile = document.getElementById('user-profile');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            // Check if user is logged in (for demo purposes, we'll use localStorage)
+            function checkAuthState() {
+                const isLoggedIn = localStorage.getItem('sahayakLoggedIn');
+                
+                if (isLoggedIn) {
+                    authButtons.classList.add('d-none');
+                    userProfile.classList.remove('d-none');
+                } else {
+                    authButtons.classList.remove('d-none');
+                    userProfile.classList.add('d-none');
+                }
+            }
+            
+            // Logout functionality
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('sahayakLoggedIn');
+                checkAuthState();
+            });
+            
+            // Form submission handlers (demo only)
+            document.querySelector('#loginModal form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                localStorage.setItem('sahayakLoggedIn', 'true');
+                checkAuthState();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+            });
+            
+            document.querySelector('#signupModal form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                localStorage.setItem('sahayakLoggedIn', 'true');
+                checkAuthState();
+                bootstrap.Modal.getInstance(document.getElementById('signupModal')).hide();
+            });
+            
+            // Initialize auth state
+            checkAuthState();
+        });
+    </script>
+</body>
+</html>
