@@ -43,7 +43,7 @@ OUTPUT_FOLDER = "outputs"
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 # Optional: serve directly from backend folder if templates not used
-LANDING_FILE = os.path.join(os.path.dirname(__file__), "landing.html")
+LANDING_FILE = os.path.join(os.path.dirname(__file__), "index.html")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -105,7 +105,7 @@ class StudentCreate(BaseModel):
 # ---------- Serve frontend pages ----------
 @app.get("/", response_class=HTMLResponse)
 async def get_home():
-    file_path = os.path.join(os.path.dirname(__file__), "landing.html")
+    file_path = os.path.join(os.path.dirname(__file__), "index.html")
     if os.path.exists(file_path):
         return FileResponse(file_path)
     return HTMLResponse("<h1>Landing page not found.</h1>", status_code=404)

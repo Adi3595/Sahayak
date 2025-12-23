@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahayak - Blackboard Diagrams & Visual Aids</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --secondary: #FF6584;
+            --accent: #36D1DC;
+            --dark-bg: #121826;
+            --dark-surface: #1E293B;
+            --dark-card: #2D3748;
+            --dark-border: #374151;
+            --text-primary: #F3F4F6;
+            --text-secondary: #D1D5DB;
+            --text-muted: #9CA3AF;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --blackboard: #2D5016;
+            --chalk: #F0F0F0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--dark-border);
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            background: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-item {
+            padding: 12px 24px;
+            background: var(--dark-surface);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            border: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .nav-item:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .nav-item.active {
+            background: var(--primary);
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .toggle-nav {
+            display: flex;
+            background: var(--dark-surface);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 30px;
+            border: 1px solid var(--dark-border);
+            flex-wrap: wrap;
+        }
+        
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+        
+        .toggle-option.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .section-title i {
+            color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .diagram-controls {
+            margin-bottom: 25px;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: border 0.3s;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+        }
+        
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-accent {
+            background: linear-gradient(to right, var(--accent), #2bc7d2);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, var(--dark-surface), #2a3446);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #2a3446, #323d52);
+        }
+        
+        .blackboard-container {
+            background: var(--blackboard);
+            border: 15px solid #5D4037;
+            border-radius: 8px;
+            padding: 30px;
+            min-height: 500px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        
+        .blackboard {
+            background: var(--blackboard);
+            min-height: 400px;
+            position: relative;
+            border: 2px dashed rgba(240, 240, 240, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        #diagramCanvas {
+            width: 100%;
+            height: 400px;
+            background: transparent;
+            cursor: crosshair;
+        }
+        
+        .diagram-preview {
+            background: var(--dark-surface);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .preview-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .instructions {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .instructions h4 {
+            color: var(--success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        
+        .template-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .template-item {
+            background: var(--dark-surface);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .template-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .template-name {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .tools-panel {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tool-btn {
+            padding: 10px 15px;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tool-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .tool-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .color-option.active {
+            border-color: var(--text-primary);
+            transform: scale(1.1);
+        }
+        
+        .color-option[data-color="chalk"] {
+            background: var(--chalk);
+        }
+        
+        .color-option[data-color="yellow"] {
+            background: #FFEB3B;
+        }
+        
+        .color-option[data-color="red"] {
+            background: #F44336;
+        }
+        
+        .color-option[data-color="blue"] {
+            background: #2196F3;
+        }
+        
+        .color-option[data-color="green"] {
+            background: #4CAF50;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--dark-surface);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid var(--success);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid var(--error);
+        }
+        
+        .result-content {
+            background: var(--dark-surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .diagram-result {
+            background: var(--dark-card);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .diagram-title {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .content-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .content-tab {
+            padding: 10px 15px;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .content-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .content-area {
+            display: none;
+        }
+        
+        .content-area.active {
+            display: block;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group input {
+            flex: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        /* NEW STYLES FOR ENHANCED FEATURES */
+        .tool-options {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--dark-surface);
+            border-radius: 8px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .tool-options.active {
+            display: block;
+        }
+        
+        .shape-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .shape-option {
+            padding: 10px;
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .shape-option.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .shape-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--dark-border);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .text-input-container {
+            position: absolute;
+            display: none;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.65);
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .text-input {
+            background: transparent;
+            border: 2px solid #F0F0F0;
+            color: #F0F0F0;
+            font-size: 16px;
+            font-family: Arial;
+            padding: 8px;
+            outline: none;
+            resize: none;
+            min-width: 200px;
+            min-height: 40px;
+            border-radius: 4px;
+        }
+        
+        .text-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+        
+        .text-control-btn {
+            padding: 6px 12px;
+            background: var(--primary);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .movable-text {
+            position: absolute;
+            color: #F0F0F0;
+            cursor: move;
+            user-select: none;
+            z-index: 10;
+            padding: 2px 5px;
+            border-radius: 3px;
+            pointer-events: auto;
+            white-space: pre-wrap;
+        }
+        
+        .movable-text.selected {
+            background-color: rgba(108, 99, 255, 0.12);
+            border: 2px dashed var(--primary);
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .movable-text.selected .delete-btn {
+            display: block;
+        }
+        
+        .thickness-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--chalk);
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-item {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .tools-panel {
+                justify-content: center;
+            }
+            
+            .toggle-option {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chalkboard"></i>
+                </div>
+                <h1>Sahayak</h1>
+            </div>
+            <p class="subtitle">Create comprehensive visual aids, diagrams, and teaching tools for blackboard instruction</p>
+        </header>
+        
+        <nav class="nav-menu">
+            <a href="/" class="nav-item">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/lesson-plan" class="nav-item">
+                <i class="fas fa-book"></i> Lesson Planning
+            </a>
+            <a href="/differentiated-materials" class="nav-item">
+                <i class="fas fa-layer-group"></i> Differentiated Materials
+            </a>
+            <a href="/blackboard-diagrams" class="nav-item active">
+                <i class="fas fa-chalkboard"></i> Visual Teaching Aids
+            </a>
+        </nav>
+        
+        <div class="toggle-nav">
+            <div class="toggle-option active" data-section="drawing-tool">
+                <i class="fas fa-pencil-alt"></i> Drawing Tool
+            </div>
+            <div class="toggle-option" data-section="diagram-generator">
+                <i class="fas fa-robot"></i> AI Diagram Generator
+            </div>
+            <div class="toggle-option" data-section="visual-aids">
+                <i class="fas fa-images"></i> Complete Visual Aids
+            </div>
+            <div class="toggle-option" data-section="flowcharts">
+                <i class="fas fa-project-diagram"></i> Flowcharts
+            </div>
+            <div class="toggle-option" data-section="timelines">
+                <i class="fas fa-hourglass-half"></i> Timelines
+            </div>
+        </div>
+        
+        <!-- Section 1: Drawing Tool -->
+        <div class="content-section active" id="drawing-tool-section">
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-pencil-alt"></i>
+                        Blackboard Drawing Tool
+                    </h2>
+                    
+                    <div class="blackboard-container">
+                        <div class="blackboard" id="blackboard">
+                            <canvas id="diagramCanvas" width="800" height="400"></canvas>
+                            <div class="text-input-container" id="textInputContainer">
+                                <textarea class="text-input" id="textInput" placeholder="Type your text here..."></textarea>
+                                <div class="text-controls">
+                                    <button class="text-control-btn" id="confirmTextBtn">Add Text</button>
+                                    <button class="text-control-btn" id="cancelTextBtn">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tools-panel">
+                        <button class="tool-btn active" data-tool="line">
+                            <i class="fas fa-pencil-alt"></i> Draw
+                        </button>
+                        <button class="tool-btn" data-tool="shape">
+                            <i class="fas fa-square"></i> Shapes
+                        </button>
+                        <button class="tool-btn" data-tool="text">
+                            <i class="fas fa-font"></i> Text
+                        </button>
+                        <button class="tool-btn" data-tool="select">
+                            <i class="fas fa-mouse-pointer"></i> Select/Move
+                        </button>
+                        <button class="tool-btn" data-tool="eraser">
+                            <i class="fas fa-eraser"></i> Eraser
+                        </button>
+                        <button class="tool-btn" id="clearBtn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    
+                    <!-- Thickness Control -->
+                    <div class="control-group">
+                        <label>
+                            Tool Thickness: 
+                            <span class="slider-value" id="thicknessValue">3</span>
+                            <span class="thickness-indicator" id="thicknessIndicator"></span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="thicknessSlider" min="1" max="20" value="3">
+                        </div>
+                    </div>
+                    
+                    <!-- Shape Options -->
+                    <div class="tool-options" id="shapeOptions">
+                        <label>Select Shape:</label>
+                        <div class="shape-options">
+                            <div class="shape-option active" data-shape="rectangle">
+                                <div class="shape-icon"><i class="fas fa-square"></i></div>
+                                <div>Rectangle</div>
+                            </div>
+                            <div class="shape-option" data-shape="circle">
+                                <div class="shape-icon"><i class="fas fa-circle"></i></div>
+                                <div>Circle</div>
+                            </div>
+                            <div class="shape-option" data-shape="triangle">
+                                <div class="shape-icon"><i class="fas fa-play"></i></div>
+                                <div>Triangle</div>
+                            </div>
+                            <div class="shape-option" data-shape="line">
+                                <div class="shape-icon"><i class="fas fa-minus"></i></div>
+                                <div>Line</div>
+                            </div>
+                            <div class="shape-option" data-shape="arrow">
+                                <div class="shape-icon"><i class="fas fa-arrow-right"></i></div>
+                                <div>Arrow</div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group" style="margin-top: 15px;">
+                            <label>
+                                <input type="checkbox" id="fillShape">
+                                Fill Shapes
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Text Options -->
+                    <div class="tool-options" id="textOptions">
+                        <div class="control-group">
+                            <label>Font Size:</label>
+                            <div class="slider-container">
+                                <input type="range" id="textSize" min="12" max="36" value="18">
+                                <span class="slider-value" id="textSizeValue">18</span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Font Family:</label>
+                            <select id="textFont">
+                                <option value="Arial">Arial</option>
+                                <option value="'Times New Roman'">Times New Roman</option>
+                                <option value="'Courier New'">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Eraser Options -->
+                    <div class="tool-options" id="eraserOptions">
+                        <div class="control-group">
+                            <label>Eraser Size:</label>
+                            <div class="slider-container">
+                                <input type="range" id="eraserSize" min="5" max="50" value="20">
+                                <span class="slider-value" id="eraserSizeValue">20</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Chalk Color</label>
+                        <div class="color-picker">
+                            <div class="color-option active" data-color="chalk" style="background: #F0F0F0;"></div>
+                            <div class="color-option" data-color="yellow" style="background: #FFEB3B;"></div>
+                            <div class="color-option" data-color="red" style="background: #F44336;"></div>
+                            <div class="color-option" data-color="blue" style="background: #2196F3;"></div>
+                            <div class="color-option" data-color="green" style="background: #4CAF50;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="saveBtn">
+                            <i class="fas fa-download"></i> Save Diagram
+                        </button>
+                        <button class="btn btn-accent" id="applyTemplateBtn">
+                            <i class="fas fa-magic"></i> Apply Template
+                        </button>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-lightbulb"></i> Blackboard Drawing Tips</h4>
+                        <ol>
+                            <li>Use simple, clear lines that are easy to replicate</li>
+                            <li>Start with basic shapes and build complexity gradually</li>
+                            <li>Use different chalk colors to highlight important elements</li>
+                            <li>Keep text large and legible from the back of the classroom</li>
+                            <li>Practice the drawing sequence before teaching</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-magic"></i>
+                        Quick Templates
+                    </h2>
+                    
+                    <div class="template-gallery">
+                        <div class="template-item" data-template="line-graph">
+                            <div class="template-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="template-name">Line Graph</div>
+                        </div>
+                        <div class="template-item" data-template="bar-chart">
+                            <div class="template-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="template-name">Bar Chart</div>
+                        </div>
+                        <div class="template-item" data-template="pie-chart">
+                            <div class="template-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="template-name">Pie Chart</div>
+                        </div>
+                        <div class="template-item" data-template="venn-diagram">
+                            <div class="template-icon">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="template-name">Venn Diagram</div>
+                        </div>
+                        <div class="template-item" data-template="flowchart">
+                            <div class="template-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="template-name">Flowchart</div>
+                        </div>
+                        <div class="template-item" data-template="timeline">
+                            <div class="template-icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="template-name">Timeline</div>
+                        </div>
+                    </div>
+                    
+                    <div class="diagram-preview">
+                        <div class="preview-title">Recent Diagrams</div>
+                        <div id="recentDiagrams">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">
+                                No recent diagrams. Create one to see it here.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2: AI Diagram Generator -->
+        <div class="content-section" id="diagram-generator-section">
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-robot"></i>
+                        AI Diagram Generator
+                    </h2>
+                    
+                    <div class="control-group">
+                        <label for="diagramTopic">Topic for Diagrams</label>
+                        <input type="text" id="diagramTopic" placeholder="e.g., Photosynthesis process, Math equation, Historical timeline...">
+                    </div>
+                    
+                    <div class="content-tabs">
+                        <div class="content-tab active" data-content="general">General Topic</div>
+                        <div class="content-tab" data-content="summary">From Summary</div>
+                        <div class="content-tab" data-content="text">From Text Content</div>
+                    </div>
+                    
+                    <div class="content-area active" id="general-content">
+                        <div class="control-group">
+                            <label for="numDiagrams">Number of Diagrams to Generate</label>
+                            <select id="numDiagrams">
+                                <option value="1">1 Diagram</option>
+                                <option value="2">2 Diagrams</option>
+                                <option value="3" selected>3 Diagrams</option>
+                                <option value="4">4 Diagrams</option>
+                                <option value="5">5 Diagrams</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="diagramStyle">Drawing Style</label>
+                            <select id="diagramStyle">
+                                <option value="simple">Simple Line Drawing</option>
+                                <option value="schematic">Schematic Diagram</option>
+                                <option value="flowchart">Flowchart Style</option>
+                                <option value="timeline">Timeline Format</option>
+                                <option value="comparison">Comparison Chart</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area" id="summary-content">
+                        <div class="control-group">
+                            <label for="summaryText">Paste Summary Content</label>
+                            <textarea id="summaryText" rows="6" placeholder="Paste your summary or key points here..."></textarea>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="summaryNumDiagrams">Number of Diagrams</label>
+                            <select id="summaryNumDiagrams">
+                                <option value="2">2 Diagrams</option>
+                                <option value="3" selected>3 Diagrams</option>
+                                <option value="4">4 Diagrams</option>
+                                <option value="5">5 Diagrams</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area" id="text-content">
+                        <div class="control-group">
+                            <label for="textContent">Paste Text Content</label>
+                            <textarea id="textContent" rows="8" placeholder="Paste your full text content here..."></textarea>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="textNumDiagrams">Number of Diagrams</label>
+                            <select id="textNumDiagrams">
+                                <option value="3" selected>3 Diagrams</option>
+                                <option value="4">4 Diagrams</option>
+                                <option value="5">5 Diagrams</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-accent btn-full" id="generateDiagramBtn">
+                        <i class="fas fa-robot"></i> Generate Diagrams
+                    </button>
+                    
+                    <div class="loading" id="diagramLoading">
+                        <div class="spinner"></div>
+                        <p>Generating your diagrams and visual aids...</p>
+                    </div>
+                    
+                    <div class="success-message" id="diagramSuccess">
+                        <i class="fas fa-check-circle"></i> Diagrams generated successfully!
+                    </div>
+                    
+                    <div class="error-message" id="diagramError">
+                        <i class="fas fa-exclamation-circle"></i> <span id="diagramErrorText"></span>
+                    </div>
+                    
+                    <div class="result-content" id="diagramResults" style="display: none;">
+                        <!-- Diagram results will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Diagram Types
+                    </h2>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-list"></i> Available Diagram Types</h4>
+                        <ul>
+                            <li><strong>Flowcharts</strong> - Process and decision diagrams</li>
+                            <li><strong>Timelines</strong> - Historical events and sequences</li>
+                            <li><strong>Comparison Charts</strong> - Contrasting concepts</li>
+                            <li><strong>Cycle Diagrams</strong> - Repeating processes</li>
+                            <li><strong>Mind Maps</strong> - Related concepts and ideas</li>
+                            <li><strong>Hierarchical Charts</strong> - Classification systems</li>
+                            <li><strong>Simple Graphs</strong> - Data representation</li>
+                            <li><strong>Schematic Diagrams</strong> - Technical processes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-tips"></i> Teaching Benefits</h4>
+                        <ul>
+                            <li>Visual learners understand concepts better</li>
+                            <li>Complex information becomes accessible</li>
+                            <li>Students can follow along and draw their own</li>
+                            <li>Diagrams serve as memory aids</li>
+                            <li>Encourages active learning and participation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 3: Complete Visual Aids -->
+        <div class="content-section" id="visual-aids-section">
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-images"></i>
+                        Complete Visual Teaching Aids
+                    </h2>
+                    
+                    <div class="control-group">
+                        <label for="visualTopic">Teaching Topic</label>
+                        <input type="text" id="visualTopic" placeholder="e.g., Cell Structure, World War II, Algebraic Equations...">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="gradeLevel">Grade Level</label>
+                        <select id="gradeLevel">
+                            <option value="elementary">Elementary School</option>
+                            <option value="middle" selected>Middle School</option>
+                            <option value="high">High School</option>
+                            <option value="college">College/University</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="lessonDuration">Lesson Duration (minutes)</label>
+                        <input type="number" id="lessonDuration" min="15" max="120" value="45">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="learningObjectives">Learning Objectives (optional)</label>
+                        <textarea id="learningObjectives" rows="3" placeholder="What should students learn from this lesson?"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-accent btn-full" id="generateVisualAidsBtn">
+                        <i class="fas fa-cubes"></i> Generate Complete Visual Aids
+                    </button>
+                    
+                    <div class="loading" id="visualAidsLoading">
+                        <div class="spinner"></div>
+                        <p>Creating your comprehensive visual teaching toolkit...</p>
+                    </div>
+                    
+                    <div class="success-message" id="visualAidsSuccess">
+                        <i class="fas fa-check-circle"></i> Visual aids generated successfully!
+                    </div>
+                    
+                    <div class="error-message" id="visualAidsError">
+                        <i class="fas fa-exclamation-circle"></i> <span id="visualAidsErrorText"></span>
+                    </div>
+                    
+                    <div class="result-content" id="visualAidsResults" style="display: none;">
+                        <!-- Visual aids results will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        What's Included
+                    </h2>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-check-circle"></i> Complete Visual Toolkit</h4>
+                        <ul>
+                            <li><strong>3-5 Different Diagram Types</strong> tailored to your topic</li>
+                            <li><strong>Step-by-Step Drawing Guides</strong> for each visual</li>
+                            <li><strong>Teaching Strategies</strong> for effective implementation</li>
+                            <li><strong>Discussion Prompts</strong> for student engagement</li>
+                            <li><strong>Adaptation Tips</strong> for different learning styles</li>
+                            <li><strong>Time Management</strong> suggestions for your lesson</li>
+                            <li><strong>Common Mistakes</strong> to avoid when drawing</li>
+                            <li><strong>Assessment Ideas</strong> based on the visuals</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-chalkboard-teacher"></i> Classroom Ready</h4>
+                        <p>All visuals are designed to be:</p>
+                        <ul>
+                            <li>Easy to draw during live teaching</li>
+                            <li>Clear and visible from all parts of the classroom</li>
+                            <li>Adaptable to different teaching styles</li>
+                            <li>Supportive of various learning needs</li>
+                            <li>Time-efficient for lesson planning</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 4: Flowcharts -->
+        <div class="content-section" id="flowcharts-section">
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Flowchart Generator
+                    </h2>
+                    
+                    <div class="control-group">
+                        <label for="flowchartTopic">Process Topic</label>
+                        <input type="text" id="flowchartTopic" placeholder="e.g., Scientific Method, Decision Making Process, Algorithm...">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="processDescription">Process Description</label>
+                        <textarea id="processDescription" rows="5" placeholder="Describe the process, steps, and decision points..."></textarea>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="flowchartComplexity">Complexity Level</label>
+                        <select id="flowchartComplexity">
+                            <option value="simple">Simple (Basic Steps)</option>
+                            <option value="medium" selected>Medium (With Decisions)</option>
+                            <option value="detailed">Detailed (Multiple Paths)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="includeDecisions" checked>
+                            Include Decision Points
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-accent btn-full" id="generateFlowchartBtn">
+                        <i class="fas fa-sitemap"></i> Generate Flowchart
+                    </button>
+                    
+                    <div class="loading" id="flowchartLoading">
+                        <div class="spinner"></div>
+                        <p>Creating your educational flowchart...</p>
+                    </div>
+                    
+                    <div class="success-message" id="flowchartSuccess">
+                        <i class="fas fa-check-circle"></i> Flowchart generated successfully!
+                    </div>
+                    
+                    <div class="error-message" id="flowchartError">
+                        <i class="fas fa-exclamation-circle"></i> <span id="flowchartErrorText"></span>
+                    </div>
+                    
+                    <div class="result-content" id="flowchartResults" style="display: none;">
+                        <!-- Flowchart results will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-shapes"></i>
+                        Flowchart Symbols
+                    </h2>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-square"></i> Standard Symbols</h4>
+                        <ul>
+                            <li><strong>Oval</strong> - Start/End points</li>
+                            <li><strong>Rectangle</strong> - Process steps</li>
+                            <li><strong>Diamond</strong> - Decision points</li>
+                            <li><strong>Arrows</strong> - Flow direction</li>
+                            <li><strong>Parallelogram</strong> - Input/Output</li>
+                            <li><strong>Circle</strong> - Connectors</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-tips"></i> Teaching Tips</h4>
+                        <ul>
+                            <li>Start with simple flowcharts for basic processes</li>
+                            <li>Use consistent symbols throughout</li>
+                            <li>Label all decision points clearly</li>
+                            <li>Keep the flowchart readable and uncluttered</li>
+                            <li>Build complex flowcharts progressively</li>
+                            <li>Encourage students to create their own</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 5: Timelines -->
+        <div class="content-section" id="timelines-section">
+            <div class="main-content">
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-hourglass-half"></i>
+                        Timeline Generator
+                    </h2>
+                    
+                    <div class="control-group">
+                        <label for="timelineTopic">Timeline Topic</label>
+                        <input type="text" id="timelineTopic" placeholder="e.g., American Revolution, Evolution of Technology, Life Cycle...">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="timelineEvents">Key Events or Periods</label>
+                        <textarea id="timelineEvents" rows="5" placeholder="List the main events, dates, or periods to include..."></textarea>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="timelineType">Timeline Type</label>
+                        <select id="timelineType">
+                            <option value="linear">Linear Timeline</option>
+                            <option value="comparative">Comparative Timeline</option>
+                            <option value="thematic">Thematic Timeline</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="numEvents">Number of Key Events</label>
+                        <select id="numEvents">
+                            <option value="3">3 Events</option>
+                            <option value="5" selected>5 Events</option>
+                            <option value="7">7 Events</option>
+                            <option value="10">10 Events</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-accent btn-full" id="generateTimelineBtn">
+                        <i class="fas fa-history"></i> Generate Timeline
+                    </button>
+                    
+                    <div class="loading" id="timelineLoading">
+                        <div class="spinner"></div>
+                        <p>Creating your educational timeline...</p>
+                    </div>
+                    
+                    <div class="success-message" id="timelineSuccess">
+                        <i class="fas fa-check-circle"></i> Timeline generated successfully!
+                    </div>
+                    
+                    <div class="error-message" id="timelineError">
+                        <i class="fas fa-exclamation-circle"></i> <span id="timelineErrorText"></span>
+                    </div>
+                    
+                    <div class="result-content" id="timelineResults" style="display: none;">
+                        <!-- Timeline results will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Timeline Types
+                    </h2>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-stream"></i> Timeline Variations</h4>
+                        <ul>
+                            <li><strong>Linear Timeline</strong> - Sequential events in order</li>
+                            <li><strong>Comparative Timeline</strong> - Multiple parallel timelines</li>
+                            <li><strong>Thematic Timeline</strong> - Events grouped by themes</li>
+                            <li><strong>Biographical Timeline</strong> - Life events of a person</li>
+                            <li><strong>Historical Timeline</strong> - Major historical periods</li>
+                            <li><strong>Process Timeline</strong> - Steps in a process over time</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h4><i class="fas fa-chalkboard"></i> Classroom Applications</h4>
+                        <ul>
+                            <li>History and social studies lessons</li>
+                            <li>Scientific discoveries and inventions</li>
+                            <li>Literary works and author biographies</li>
+                            <li>Project planning and deadlines</li>
+                            <li>Personal history and family trees</li>
+                            <li>Career development and milestones</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Sahayak - Visual Teaching Tools &copy; 2023 | Enhance learning through effective visual communication</p>
+        </footer>
+    </div>
+
+    <script>
+
+        const API_BASE_URL = window.location.hostname.includes('localhost') ||
+                     window.location.hostname.includes('127.0.0.1')
+  ? 'http://127.0.0.5:8000'
+  : 'https://sahayak-h30h.onrender.com';
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up toggle navigation
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            toggleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Update active toggle option
+                    toggleOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${targetSection}-section`) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Set up content tabs for diagram generator
+            const contentTabs = document.querySelectorAll('.content-tab');
+            const contentAreas = document.querySelectorAll('.content-area');
+            
+            contentTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetContent = this.getAttribute('data-content');
+                    
+                    // Update active tab
+                    contentTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target content area
+                    contentAreas.forEach(area => {
+                        area.classList.remove('active');
+                        if (area.id === `${targetContent}-content`) {
+                            area.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // ENHANCED CANVAS DRAWING FUNCTIONALITY
+            // Canvas drawing functionality (patched - replace old block with this)
+
+// Elements & basics
+const canvas = document.getElementById('diagramCanvas');
+const ctx = canvas.getContext('2d');
+const blackboard = document.querySelector('.blackboard') || canvas.parentElement;
+
+let isDrawing = false;
+let startX = 0, startY = 0;
+let lastX = 0, lastY = 0;
+
+// Tools & state
+let currentTool = 'line'; // 'line' (freehand), 'shape', 'eraser', 'text', 'select'
+let currentShape = 'rectangle'; // for shape tool
+let currentColor = '#F0F0F0';
+let currentThickness = 3;
+let eraserSize = 20;
+
+// Persistent objects and text
+const objects = []; // shapes stored as {type:'shape', shape:'rectangle', x1,y1,x2,y2, color, thickness, fill}
+let textElements = []; // {id, text, x, y, fontSize, fontFamily, color, element}
+let selectedTextElement = null;
+let isMovingText = false;
+let textOffset = { x:0, y:0 };
+let textPosition = { x:0, y:0 };
+
+// DOM bindings (these IDs/classes exist in your markup)
+const toolButtons = document.querySelectorAll('.tool-btn');
+const shapeOptionsElements = document.querySelectorAll('.shape-option');
+const colorOptions = document.querySelectorAll('.color-option');
+const thicknessSlider = document.getElementById('thicknessSlider');
+const thicknessValue = document.getElementById('thicknessValue');
+const thicknessIndicator = document.getElementById('thicknessIndicator');
+const eraserSizeSlider = document.getElementById('eraserSize');
+const eraserSizeValue = document.getElementById('eraserSizeValue');
+const textSizeSlider = document.getElementById('textSize');
+const textSizeValue = document.getElementById('textSizeValue');
+const textFontSelect = document.getElementById('textFont');
+const shapeOptions = document.getElementById('shapeOptions');
+const eraserOptions = document.getElementById('eraserOptions');
+const textOptions = document.getElementById('textOptions');
+const textInputContainer = document.getElementById('textInputContainer');
+const textInput = document.getElementById('textInput');
+const confirmTextBtn = document.getElementById('confirmTextBtn');
+const cancelTextBtn = document.getElementById('cancelTextBtn');
+const clearBtn = document.getElementById('clearBtn');
+const fillShapeCheckbox = document.getElementById('fillShape');
+
+// initialize canvas drawing style
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+ctx.strokeStyle = currentColor;
+ctx.lineWidth = currentThickness;
+ctx.fillStyle = currentColor;
+ctx.font = '18px Arial';
+
+// helper — update thickness indicator circle if it exists
+function updateThicknessIndicator() {
+    if (thicknessIndicator) {
+        thicknessIndicator.style.width = Math.max(4, currentThickness) + 'px';
+        thicknessIndicator.style.height = Math.max(4, currentThickness) + 'px';
+    }
+}
+updateThicknessIndicator();
+
+// Tool button logic (keeps existing behaviour)
+toolButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (this.id === 'clearBtn') { clearAll(); return; }
+        toolButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentTool = this.getAttribute('data-tool');
+
+        // show/hide panel sections if present
+        if (shapeOptions) shapeOptions.classList.toggle('active', currentTool === 'shape');
+        if (eraserOptions) eraserOptions.classList.toggle('active', currentTool === 'eraser');
+        if (textOptions) textOptions.classList.toggle('active', currentTool === 'text');
+
+        // hide text input if switching away
+        if (currentTool !== 'text' && textInputContainer) textInputContainer.style.display = 'none';
+
+        // deselect text if leaving select tool
+        if (currentTool !== 'select') deselectText();
+    });
+});
+
+// Shape option selection
+shapeOptionsElements.forEach(opt => {
+    opt.addEventListener('click', function() {
+        shapeOptionsElements.forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+        currentShape = this.getAttribute('data-shape');
+    });
+});
+
+// Color options
+colorOptions.forEach(option => {
+    option.addEventListener('click', function() {
+        colorOptions.forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+
+        const color = this.getAttribute('data-color');
+        switch(color) {
+            case 'chalk': currentColor = '#F0F0F0'; break;
+            case 'yellow': currentColor = '#FFEB3B'; break;
+            case 'red': currentColor = '#F44336'; break;
+            case 'blue': currentColor = '#2196F3'; break;
+            case 'green': currentColor = '#4CAF50'; break;
+        }
+        ctx.strokeStyle = currentColor;
+        ctx.fillStyle = currentColor;
+    });
+});
+
+// Sliders
+if (thicknessSlider) {
+    thicknessSlider.addEventListener('input', function() {
+        currentThickness = parseInt(this.value, 10);
+        thicknessValue && (thicknessValue.textContent = currentThickness);
+        ctx.lineWidth = currentThickness;
+        updateThicknessIndicator();
+    });
+}
+if (eraserSizeSlider) {
+    eraserSizeSlider.addEventListener('input', function() {
+        eraserSize = parseInt(this.value, 10);
+        eraserSizeValue && (eraserSizeValue.textContent = eraserSize);
+    });
+}
+if (textSizeSlider) {
+    textSizeSlider.addEventListener('input', function() {
+        textSizeValue && (textSizeValue.textContent = this.value);
+    });
+}
+
+// Coordinates mapping (account for CSS scaling)
+function getCoordinates(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return [
+        (e.clientX - rect.left) * scaleX,
+        (e.clientY - rect.top) * scaleY
+    ];
+}
+
+// Convert client coords to blackboard-local CSS pixels (for DOM text placement)
+function toBlackboardLocal(clientX, clientY) {
+    const rect = blackboard.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
+}
+
+// Start drawing / pointerdown
+function startDrawing(e) {
+    isDrawing = true;
+    [lastX, lastY] = getCoordinates(e);
+    startX = lastX;
+    startY = lastY;
+
+    if (currentTool === 'text') {
+        placeTextInput(lastX, lastY);
+        isDrawing = false;
+        return;
+    } else if (currentTool === 'select') {
+        const clickedText = getTextAtPosition(lastX, lastY);
+        if (clickedText) {
+            selectText(clickedText);
+            isMovingText = true;
+            const local = toBlackboardLocal(e.clientX, e.clientY);
+            textOffset.x = local.x - clickedText.x;
+            textOffset.y = local.y - clickedText.y;
+            isDrawing = false;
+            return;
+        } else {
+            deselectText();
+        }
+    }
+}
+
+// Drawing / pointermove
+function draw(e) {
+    if (!isDrawing) return;
+    const [x, y] = getCoordinates(e);
+
+    if (currentTool === 'line') {
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = currentThickness;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.restore();
+        lastX = x; lastY = y;
+    }
+    else if (currentTool === 'eraser') {
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = eraserSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.restore();
+        lastX = x; lastY = y;
+    }
+    else if (currentTool === 'shape') {
+        // preview: redraw existing objects then draw temporary shape
+        redrawCanvas();
+        drawShapePreview(startX, startY, x, y);
+        lastX = x; lastY = y;
+    }
+    else if (currentTool === 'select' && isMovingText && selectedTextElement) {
+        const local = toBlackboardLocal(e.clientX, e.clientY);
+        selectedTextElement.x = local.x - textOffset.x;
+        selectedTextElement.y = local.y - textOffset.y;
+        updateTextElement(selectedTextElement);
+    }
+}
+
+// pointerup/stopped
+function stopDrawing() {
+    if (!isDrawing) return;
+
+    if (currentTool === 'shape') {
+        // finalize shape (store using startX/startY and lastX/lastY)
+        objects.push({
+            type: 'shape',
+            shape: currentShape,
+            x1: startX, y1: startY,
+            x2: lastX, y2: lastY,
+            color: currentColor,
+            thickness: currentThickness,
+            fill: !!(fillShapeCheckbox && fillShapeCheckbox.checked)
+        });
+        // redraw to ensure final shape is painted
+        redrawCanvas();
+    }
+
+    isDrawing = false;
+    isMovingText = false;
+}
+
+// shape preview draw (temporary)
+function drawShapePreview(x1, y1, x2, y2) {
+    ctx.save();
+    ctx.strokeStyle = currentColor;
+    ctx.fillStyle = currentColor;
+    ctx.lineWidth = currentThickness;
+    switch (currentShape) {
+        case 'rectangle':
+            if (fillShapeCheckbox && fillShapeCheckbox.checked) ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+            else ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+            break;
+        case 'circle':
+            const r = Math.sqrt(Math.pow(x2 - x1,2) + Math.pow(y2 - y1,2));
+            ctx.beginPath(); ctx.arc(x1, y1, r, 0, Math.PI*2);
+            if (fillShapeCheckbox && fillShapeCheckbox.checked) ctx.fill(); else ctx.stroke();
+            break;
+        case 'triangle':
+            ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.lineTo(x1*2 - x2, y2); ctx.closePath();
+            if (fillShapeCheckbox && fillShapeCheckbox.checked) ctx.fill(); else ctx.stroke();
+            break;
+        case 'line':
+            ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+            break;
+        case 'arrow':
+            drawArrowOnContext(x1,y1,x2,y2);
+            break;
+    }
+    ctx.restore();
+}
+
+// arrow drawing helper
+function drawArrowOnContext(fromX, fromY, toX, toY) {
+    const headlen = 15;
+    const angle = Math.atan2(toY - fromY, toX - fromX);
+    ctx.beginPath(); ctx.moveTo(fromX, fromY); ctx.lineTo(toX, toY); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI/6), toY - headlen * Math.sin(angle - Math.PI/6));
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI/6), toY - headlen * Math.sin(angle + Math.PI/6));
+    ctx.stroke();
+}
+
+// redraw all stored objects (shapes)
+function redrawCanvas() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for (const obj of objects) {
+        if (obj.type === 'shape') {
+            ctx.save();
+            ctx.strokeStyle = obj.color;
+            ctx.fillStyle = obj.color;
+            ctx.lineWidth = obj.thickness;
+            switch(obj.shape) {
+                case 'rectangle':
+                    if (obj.fill) ctx.fillRect(obj.x1,obj.y1,obj.x2-obj.x1,obj.y2-obj.y1);
+                    else ctx.strokeRect(obj.x1,obj.y1,obj.x2-obj.x1,obj.y2-obj.y1);
+                    break;
+                case 'circle':
+                    const r = Math.sqrt(Math.pow(obj.x2 - obj.x1,2) + Math.pow(obj.y2 - obj.y1,2));
+                    ctx.beginPath(); ctx.arc(obj.x1,obj.y1,r,0,Math.PI*2);
+                    if (obj.fill) ctx.fill(); else ctx.stroke();
+                    break;
+                case 'triangle':
+                    ctx.beginPath(); ctx.moveTo(obj.x1,obj.y1); ctx.lineTo(obj.x2,obj.y2); ctx.lineTo(obj.x1*2 - obj.x2, obj.y2); ctx.closePath();
+                    if (obj.fill) ctx.fill(); else ctx.stroke();
+                    break;
+                case 'line':
+                    ctx.beginPath(); ctx.moveTo(obj.x1,obj.y1); ctx.lineTo(obj.x2,obj.y2); ctx.stroke();
+                    break;
+                case 'arrow':
+                    drawArrowOnContext(obj.x1,obj.y1,obj.x2,obj.y2);
+                    break;
+            }
+            ctx.restore();
+        }
+    }
+}
+
+// clear everything: canvas + objects + text DOMs
+function clearAll() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    objects.length = 0;
+    // remove text DOM elements
+    textElements.slice().forEach(t => { if (t.element) t.element.remove(); });
+    textElements = [];
+    selectedTextElement = null;
+}
+
+// Text: position the floating text input (DOM)
+function placeTextInput(x, y) {
+    textPosition = { x, y };
+    if (!textInputContainer || !textInput) return;
+    const rect = canvas.getBoundingClientRect();
+    textInputContainer.style.left = (rect.left + x) + 'px';
+    textInputContainer.style.top = (rect.top + y) + 'px';
+    textInputContainer.style.display = 'block';
+    textInput.value = '';
+    textInput.focus();
+}
+
+// Add trimmed text into a DOM element and store meta
+function addTextToCanvas() {
+    if (!textInput) return;
+    const text = textInput.value.trim();
+    if (!text) { textInputContainer.style.display = 'none'; return; }
+
+    const fontSize = textSizeSlider ? parseInt(textSizeSlider.value,10) : 18;
+    const fontFamily = textFontSelect ? textFontSelect.value : 'Arial';
+    const rec = {
+        id: 'text-' + Date.now(),
+        text: text,
+        x: textPosition.x,
+        y: textPosition.y + fontSize,
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+        color: currentColor,
+        element: null
+    };
+    createTextElement(rec);
+    textElements.push(rec);
+    textInputContainer.style.display = 'none';
+}
+
+// Create a movable DOM element for text
+function createTextElement(rec) {
+    const div = document.createElement('div');
+    div.className = 'movable-text';
+    div.id = rec.id;
+    div.style.left = rec.x + 'px';
+    div.style.top = rec.y + 'px';
+    div.style.color = rec.color;
+    div.style.fontSize = rec.fontSize + 'px';
+    div.style.fontFamily = rec.fontFamily;
+    div.textContent = rec.text;
+
+    // delete button
+    const del = document.createElement('button');
+    del.className = 'delete-btn';
+    del.innerHTML = '<i class="fas fa-times"></i>';
+    del.addEventListener('click', (ev) => { ev.stopPropagation(); deleteTextRecord(rec); });
+    div.appendChild(del);
+
+    // selection & drag (pointerdown)
+    div.addEventListener('pointerdown', (ev) => {
+        ev.stopPropagation();
+        if (currentTool === 'select') {
+            const local = toBlackboardLocal(ev.clientX, ev.clientY);
+            selectText(rec);
+            isMovingText = true;
+            textOffset.x = local.x - rec.x;
+            textOffset.y = local.y - rec.y;
+        }
+    });
+
+    // double click to edit (nice to have)
+    div.addEventListener('dblclick', (ev) => {
+        ev.stopPropagation();
+        // show input at same pos
+        placeTextInput(rec.x, rec.y - rec.fontSize);
+        textInput.value = rec.text;
+        textInput._editingId = rec.id;
+    });
+
+    blackboard.appendChild(div);
+    rec.element = div;
+}
+
+// Convert client to blackboard local coords
+function toBlackboardLocal(clientX, clientY) {
+    const rect = blackboard.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
+}
+
+function updateTextElement(rec) {
+    if (!rec.element) return;
+    rec.element.style.left = rec.x + 'px';
+    rec.element.style.top = rec.y + 'px';
+}
+
+function getTextAtPosition(canvasX, canvasY) {
+    // convert canvas coords to blackboard-local coordinates
+    const canvasRect = canvas.getBoundingClientRect();
+    const scaleX = canvasRect.width / canvas.width;
+    const scaleY = canvasRect.height / canvas.height;
+    const localX = canvasX / (canvas.width / canvasRect.width);
+    const localY = canvasY / (canvas.height / canvasRect.height);
+
+    // We'll compare using DOM bounding boxes (more reliable)
+    for (let i = textElements.length - 1; i >= 0; i--) {
+        const rec = textElements[i];
+        if (!rec.element) continue;
+        const r = rec.element.getBoundingClientRect();
+        const bbRect = canvasRect;
+        const elX = r.left - bbRect.left;
+        const elY = r.top - bbRect.top;
+        if (localX >= elX && localX <= elX + r.width && localY >= elY && localY <= elY + r.height) return rec;
+    }
+    return null;
+}
+
+function selectText(rec) {
+    deselectText();
+    selectedTextElement = rec;
+    if (rec.element) rec.element.classList.add('selected');
+}
+
+function deselectText() {
+    if (selectedTextElement && selectedTextElement.element) selectedTextElement.element.classList.remove('selected');
+    selectedTextElement = null;
+}
+
+function deleteTextRecord(rec) {
+    if (rec.element) rec.element.remove();
+    textElements = textElements.filter(t => t.id !== rec.id);
+    if (selectedTextElement && selectedTextElement.id === rec.id) deselectText();
+}
+
+// Cancel text input
+function cancelText() {
+    if (textInput) textInputContainer.style.display = 'none';
+    if (textInput) textInput._editingId = null;
+}
+
+// Event wiring — use pointer events for smooth behavior
+canvas.addEventListener('pointerdown', (e) => {
+    // only left mouse / primary button
+    if (e.button !== undefined && e.button !== 0) return;
+    startDrawing(e);
+});
+window.addEventListener('pointermove', (e) => {
+    // If moving text, update selected text pos
+    if (isMovingText && selectedTextElement) {
+        const local = toBlackboardLocal(e.clientX, e.clientY);
+        selectedTextElement.x = local.x - textOffset.x;
+        selectedTextElement.y = local.y - textOffset.y;
+        updateTextElement(selectedTextElement);
+        return;
+    }
+    draw(e);
+});
+window.addEventListener('pointerup', (e) => {
+    stopDrawing();
+    // if we were editing text (double-click case), check editing id
+    if (textInput && textInput._editingId && textInput.value.trim() !== '') {
+        const rec = textElements.find(t => t.id === textInput._editingId);
+        if (rec) {
+            rec.text = textInput.value.trim();
+            rec.element.textContent = rec.text;
+            // re-add delete button
+            const del = document.createElement('button');
+            del.className = 'delete-btn';
+            del.innerHTML = '<i class="fas fa-times"></i>';
+            del.addEventListener('click', (ev) => { ev.stopPropagation(); deleteTextRecord(rec); });
+            rec.element.appendChild(del);
+        }
+        textInput._editingId = null;
+        textInputContainer.style.display = 'none';
+    }
+});
+
+// Touch support - map touches to pointer events for canvas interactions
+canvas.addEventListener('touchstart', (ev) => { ev.preventDefault(); const t = ev.touches[0]; startDrawing(t); });
+canvas.addEventListener('touchmove', (ev) => { ev.preventDefault(); const t = ev.touches[0]; draw(t); });
+canvas.addEventListener('touchend', (ev) => { ev.preventDefault(); stopDrawing(); });
+
+// Confirm/cancel text buttons
+if (confirmTextBtn) confirmTextBtn.addEventListener('click', () => {
+    // if editing existing text
+    if (textInput && textInput._editingId) {
+        const rec = textElements.find(t => t.id === textInput._editingId);
+        if (rec) {
+            rec.text = textInput.value.trim();
+            rec.element.textContent = rec.text;
+            // reappend delete btn
+            const del = document.createElement('button');
+            del.className = 'delete-btn';
+            del.innerHTML = '<i class="fas fa-times"></i>';
+            del.addEventListener('click', (ev) => { ev.stopPropagation(); deleteTextRecord(rec); });
+            rec.element.appendChild(del);
+        }
+        textInput._editingId = null;
+        textInputContainer.style.display = 'none';
+        return;
+    }
+    addTextToCanvas();
+});
+if (cancelTextBtn) cancelTextBtn.addEventListener('click', cancelText);
+
+// Keyboard: delete selected text
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' && selectedTextElement) {
+        deleteTextRecord(selectedTextElement);
+    }
+});
+
+            
+            // Save diagram
+            saveBtn.addEventListener('click', function() {
+                const dataURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'blackboard-diagram.png';
+                link.href = dataURL;
+                link.click();
+            });
+            
+            // Clear button
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Template application
+            const templateItems = document.querySelectorAll('.template-item');
+            templateItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const template = this.getAttribute('data-template');
+                    applyTemplate(template);
+                });
+            });
+            
+            // Template drawing functions
+            function applyTemplate(template) {
+                clearAll();
+                ctx.strokeStyle = '#F0F0F0';
+                ctx.lineWidth = 3;
+                
+                // ... existing template drawing functions ...
+            }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Delete' && selectedTextElement) {
+                    deleteTextRecord(selectedTextElement);
+                }
+            });
+            
+            // KEEP ALL YOUR EXISTING AI FUNCTIONALITY INTACT
+            // Enhanced AI Diagram Generation
+            document.getElementById('generateDiagramBtn').addEventListener('click', async function() {
+                const topic = document.getElementById('diagramTopic').value.trim();
+                const activeTab = document.querySelector('.content-tab.active').getAttribute('data-content');
+                
+                if (!topic) {
+                    showDiagramError('Please enter a diagram topic first.');
+                    return;
+                }
+                
+                let requestData = {
+                    topic: topic,
+                    style: document.getElementById('diagramStyle').value
+                };
+                
+                // Add content based on active tab
+                if (activeTab === 'summary') {
+                    const summaryText = document.getElementById('summaryText').value.trim();
+                    if (!summaryText) {
+                        showDiagramError('Please enter summary content.');
+                        return;
+                    }
+                    requestData.content_type = 'summary';
+                    requestData.text_content = summaryText;
+                    requestData.num_diagrams = parseInt(document.getElementById('summaryNumDiagrams').value);
+                } else if (activeTab === 'text') {
+                    const textContent = document.getElementById('textContent').value.trim();
+                    if (!textContent) {
+                        showDiagramError('Please enter text content.');
+                        return;
+                    }
+                    requestData.content_type = 'text_content';
+                    requestData.text_content = textContent;
+                    requestData.num_diagrams = parseInt(document.getElementById('textNumDiagrams').value);
+                } else {
+                    requestData.content_type = 'general';
+                    requestData.num_diagrams = parseInt(document.getElementById('numDiagrams').value);
+                }
+                
+                await generateDiagrams(requestData, 'diagram');
+            });
+            
+            // Visual Aids Generation
+            document.getElementById('generateVisualAidsBtn').addEventListener('click', async function() {
+                const topic = document.getElementById('visualTopic').value.trim();
+                const gradeLevel = document.getElementById('gradeLevel').value;
+                const lessonDuration = document.getElementById('lessonDuration').value;
+                const learningObjectives = document.getElementById('learningObjectives').value.trim();
+                
+                if (!topic) {
+                    showVisualAidsError('Please enter a teaching topic first.');
+                    return;
+                }
+                
+                const requestData = {
+                    topic: topic,
+                    grade_level: gradeLevel,
+                    lesson_duration: parseInt(lessonDuration),
+                    learning_objectives: learningObjectives
+                };
+                
+                await generateVisualAids(requestData);
+            });
+            
+            // Flowchart Generation
+            document.getElementById('generateFlowchartBtn').addEventListener('click', async function() {
+                const topic = document.getElementById('flowchartTopic').value.trim();
+                const processDescription = document.getElementById('processDescription').value.trim();
+                const complexity = document.getElementById('flowchartComplexity').value;
+                const includeDecisions = document.getElementById('includeDecisions').checked;
+                
+                if (!topic || !processDescription) {
+                    showFlowchartError('Please enter both topic and process description.');
+                    return;
+                }
+                
+                const requestData = {
+                    topic: topic,
+                    process_description: processDescription,
+                    complexity: complexity,
+                    include_decisions: includeDecisions
+                };
+                
+                await generateFlowchart(requestData);
+            });
+            
+            // Timeline Generation
+            document.getElementById('generateTimelineBtn').addEventListener('click', async function() {
+                const topic = document.getElementById('timelineTopic').value.trim();
+                const events = document.getElementById('timelineEvents').value.trim();
+                const timelineType = document.getElementById('timelineType').value;
+                const numEvents = parseInt(document.getElementById('numEvents').value);
+                
+                if (!topic || !events) {
+                    showTimelineError('Please enter both topic and events.');
+                    return;
+                }
+                
+                const requestData = {
+                    topic: topic,
+                    events: events,
+                    timeline_type: timelineType,
+                    num_events: numEvents
+                };
+                
+                await generateTimeline(requestData);
+            });
+            
+            // API call functions (keep your existing ones)
+            async function generateDiagrams(requestData, type) {
+                const loadingEl = document.getElementById('diagramLoading');
+                const successEl = document.getElementById('diagramSuccess');
+                const errorEl = document.getElementById('diagramError');
+                const resultsEl = document.getElementById('diagramResults');
+                
+                loadingEl.style.display = 'block';
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+                resultsEl.style.display = 'none';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate-diagram/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    loadingEl.style.display = 'none';
+                    successEl.style.display = 'block';
+                    resultsEl.style.display = 'block';
+                    
+                    // Format and display results
+                    resultsEl.innerHTML = `
+                        <div class="diagram-title">
+                            <i class="fas fa-check-circle"></i>
+                            Generated ${result.num_diagrams} Diagrams for: ${result.topic}
+                        </div>
+                        <div class="diagram-result">
+                            <div style="white-space: pre-wrap;">${result.instructions}</div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showDiagramError('Failed to generate diagrams: ' + error.message);
+                }
+            }
+            
+            async function generateVisualAids(requestData) {
+                const loadingEl = document.getElementById('visualAidsLoading');
+                const successEl = document.getElementById('visualAidsSuccess');
+                const errorEl = document.getElementById('visualAidsError');
+                const resultsEl = document.getElementById('visualAidsResults');
+                
+                loadingEl.style.display = 'block';
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+                resultsEl.style.display = 'none';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate-visual-aids/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    loadingEl.style.display = 'none';
+                    successEl.style.display = 'block';
+                    resultsEl.style.display = 'block';
+                    
+                    resultsEl.innerHTML = `
+                        <div class="diagram-title">
+                            <i class="fas fa-cubes"></i>
+                            Complete Visual Aids for: ${result.topic}
+                        </div>
+                        <div class="diagram-result">
+                            <div style="white-space: pre-wrap;">${result.visual_aids}</div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showVisualAidsError('Failed to generate visual aids: ' + error.message);
+                }
+            }
+            
+            async function generateFlowchart(requestData) {
+                const loadingEl = document.getElementById('flowchartLoading');
+                const successEl = document.getElementById('flowchartSuccess');
+                const errorEl = document.getElementById('flowchartError');
+                const resultsEl = document.getElementById('flowchartResults');
+                
+                loadingEl.style.display = 'block';
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+                resultsEl.style.display = 'none';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate-flowchart/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    loadingEl.style.display = 'none';
+                    successEl.style.display = 'block';
+                    resultsEl.style.display = 'block';
+                    
+                    resultsEl.innerHTML = `
+                        <div class="diagram-title">
+                            <i class="fas fa-project-diagram"></i>
+                            Flowchart for: ${result.topic}
+                        </div>
+                        <div class="diagram-result">
+                            <div style="white-space: pre-wrap;">${result.flowchart}</div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showFlowchartError('Failed to generate flowchart: ' + error.message);
+                }
+            }
+            
+            async function generateTimeline(requestData) {
+                const loadingEl = document.getElementById('timelineLoading');
+                const successEl = document.getElementById('timelineSuccess');
+                const errorEl = document.getElementById('timelineError');
+                const resultsEl = document.getElementById('timelineResults');
+                
+                loadingEl.style.display = 'block';
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+                resultsEl.style.display = 'none';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate-timeline/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    loadingEl.style.display = 'none';
+                    successEl.style.display = 'block';
+                    resultsEl.style.display = 'block';
+                    
+                    resultsEl.innerHTML = `
+                        <div class="diagram-title">
+                            <i class="fas fa-hourglass-half"></i>
+                            Timeline for: ${result.topic}
+                        </div>
+                        <div class="diagram-result">
+                            <div style="white-space: pre-wrap;">${result.timeline}</div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    showTimelineError('Failed to generate timeline: ' + error.message);
+                }
+            }
+            
+            // Error handling functions
+            function showDiagramError(message) {
+                document.getElementById('diagramErrorText').textContent = message;
+                document.getElementById('diagramLoading').style.display = 'none';
+                document.getElementById('diagramError').style.display = 'block';
+            }
+            
+            function showVisualAidsError(message) {
+                document.getElementById('visualAidsErrorText').textContent = message;
+                document.getElementById('visualAidsLoading').style.display = 'none';
+                document.getElementById('visualAidsError').style.display = 'block';
+            }
+            
+            function showFlowchartError(message) {
+                document.getElementById('flowchartErrorText').textContent = message;
+                document.getElementById('flowchartLoading').style.display = 'none';
+                document.getElementById('flowchartError').style.display = 'block';
+            }
+            
+            function showTimelineError(message) {
+                document.getElementById('timelineErrorText').textContent = message;
+                document.getElementById('timelineLoading').style.display = 'none';
+                document.getElementById('timelineError').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
