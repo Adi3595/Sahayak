@@ -40,7 +40,7 @@ A comprehensive AI-powered platform designed to revolutionize classroom preparat
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Adi3595/sahayak-2-0.git
+   git clone https://github.com/Adi3595/sahayak.git
    cd sahayak
    ```
 
@@ -169,3 +169,4 @@ For support, please open an issue on GitHub or contact the development team.
 ---
 
 **Sahayak** - Empowering educators with AI to create better learning experiences! 🎓✨
+
