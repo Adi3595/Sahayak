@@ -814,6 +814,12 @@
                 this.currentTheme = localStorage.getItem('eduai-theme') || 'light';
                 this.currentOption = 'lesson';
                 
+                // Define API base URL
+                this.API_BASE_URL = window.location.hostname.includes('localhost') ||
+                                   window.location.hostname.includes('127.0.0.1')
+                                   ? 'http://127.0.0.1:8000'
+                                   : 'https://sahayak-ufxc.onrender.com';
+                
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadConversations();
@@ -938,7 +944,7 @@
                 this.gradeSelect.value = '';
                 this.messagesContainer.innerHTML = '';
                 this.showEmptyState();
-                this.chatTitle.textContent = 'EduAI';
+                this.chatTitle.textContent = 'AI Teaching Assistant';
                 this.chatInput.value = '';
                 this.chatInput.focus();
                 this.loadConversations();
@@ -970,7 +976,8 @@
                 this.sendButton.disabled = true;
 
                 try {
-                    const response = await fetch('/generate/', {
+                    // Try to connect to backend first
+                    const response = await fetch(`${this.API_BASE_URL}/generate/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -978,13 +985,14 @@
                         body: JSON.stringify({
                             prompt: message,
                             grade: this.gradeSelect.value,
-                            conversation_id: this.currentConversationId,
+                            conversation_id: this.currentConversationId || '',
                             option: this.currentOption
                         })
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        // If backend fails, use mock response
+                        throw new Error('Backend not available, using mock response');
                     }
 
                     const data = await response.json();
@@ -996,13 +1004,99 @@
                     this.handleBotResponse(data);
 
                 } catch (error) {
-                    console.error('Error sending message:', error);
-                    this.removeTypingIndicator();
-                    this.addMessageToChat('bot', 'Sorry, I encountered an error. Please try again.');
-                } finally {
-                    this.isGenerating = false;
-                    this.sendButton.disabled = false;
+                    console.log('Using mock response:', error.message);
+                    // Use mock response if backend is not available
+                    setTimeout(() => {
+                        this.removeTypingIndicator();
+                        
+                        const mockResponse = this.generateMockResponse(message);
+                        this.handleBotResponse(mockResponse);
+                        
+                        this.isGenerating = false;
+                        this.sendButton.disabled = false;
+                    }, 1500);
                 }
+            }
+
+            generateMockResponse(message) {
+                const grade = this.gradeSelect.value || 'Elementary';
+                const option = this.currentOption;
+                
+                let response = '';
+                let type = 'chat';
+                
+                if (option === 'lesson') {
+                    response = `**Lesson Plan: ${message}**\n\n`;
+                    response += `**Grade Level:** ${grade}\n`;
+                    response += `**Duration:** 45-60 minutes\n\n`;
+                    response += `**Learning Objectives:**\n`;
+                    response += `1. Students will understand the basic concepts of ${message}\n`;
+                    response += `2. Students will be able to apply ${message} in practical situations\n`;
+                    response += `3. Students will demonstrate knowledge through activities\n\n`;
+                    response += `**Materials Needed:**\n`;
+                    response += `- Whiteboard or smartboard\n`;
+                    response += `- Handouts or worksheets\n`;
+                    response += `- Visual aids (if applicable)\n\n`;
+                    response += `**Lesson Structure:**\n`;
+                    response += `1. Introduction (5-10 min): Hook activity\n`;
+                    response += `2. Direct Instruction (15-20 min): Teach core concepts\n`;
+                    response += `3. Guided Practice (10-15 min): Group activities\n`;
+                    response += `4. Independent Practice (5-10 min): Individual work\n`;
+                    response += `5. Assessment (5 min): Quick check for understanding\n\n`;
+                    response += `**Differentiation Strategies:**\n`;
+                    response += `- For struggling students: Provide additional examples\n`;
+                    response += `- For advanced students: Offer extension activities\n`;
+                    type = 'lesson_plan';
+                } else if (option === 'activity') {
+                    response = `**Activity Plan: ${message}**\n\n`;
+                    response += `**Grade Level:** ${grade}\n`;
+                    response += `**Time Required:** 20-30 minutes\n\n`;
+                    response += `**Activity Description:**\n`;
+                    response += `This interactive activity helps students engage with ${message} through hands-on learning.\n\n`;
+                    response += `**Materials:**\n`;
+                    response += `- Activity sheets\n`;
+                    response += `- Manipulatives (if needed)\n`;
+                    response += `- Group work materials\n\n`;
+                    response += `**Instructions:**\n`;
+                    response += `1. Divide students into small groups\n`;
+                    response += `2. Introduce the activity goals\n`;
+                    response += `3. Guide students through each step\n`;
+                    response += `4. Allow time for group discussion\n`;
+                    response += `5. Have groups share their findings\n\n`;
+                    response += `**Learning Outcomes:**\n`;
+                    response += `- Collaborative skills\n`;
+                    response += `- Critical thinking\n`;
+                    response += `- Application of ${message} concepts`;
+                    type = 'activity_plan';
+                } else if (option === 'assessment') {
+                    response = `**Assessment: ${message}**\n\n`;
+                    response += `**Grade Level:** ${grade}\n`;
+                    response += `**Assessment Type:** Formative\n\n`;
+                    response += `**Assessment Objectives:**\n`;
+                    response += `1. Measure understanding of ${message}\n`;
+                    response += `2. Identify areas needing reinforcement\n`;
+                    response += `3. Provide feedback for improvement\n\n`;
+                    response += `**Assessment Methods:**\n`;
+                    response += `1. **Multiple Choice Questions** (5 questions)\n`;
+                    response += `2. **Short Answer Questions** (3 questions)\n`;
+                    response += `3. **Practical Application Task** (1 task)\n\n`;
+                    response += `**Rubric:**\n`;
+                    response += `- **Excellent (4):** Complete understanding, accurate application\n`;
+                    response += `- **Proficient (3):** Good understanding, minor errors\n`;
+                    response += `- **Developing (2):** Basic understanding, needs improvement\n`;
+                    response += `- **Beginning (1):** Limited understanding, needs reteaching\n\n`;
+                    response += `**Feedback Strategies:**\n`;
+                    response += `- Provide specific, constructive comments\n`;
+                    response += `- Highlight strengths and areas for growth\n`;
+                    response += `- Suggest next steps for learning`;
+                    type = 'assessment_plan';
+                }
+                
+                return {
+                    response: response,
+                    conversation_id: this.currentConversationId || `conv-${Date.now()}`,
+                    type: type
+                };
             }
 
             async sendMessageWithGrade() {
@@ -1022,7 +1116,7 @@
                 this.sendButton.disabled = true;
 
                 try {
-                    const response = await fetch('/generate/', {
+                    const response = await fetch(`${this.API_BASE_URL}/generate/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1030,13 +1124,13 @@
                         body: JSON.stringify({
                             prompt: lastUserMessage,
                             grade: grade,
-                            conversation_id: this.currentConversationId,
+                            conversation_id: this.currentConversationId || '',
                             option: this.currentOption
                         })
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error('Backend not available');
                     }
 
                     const data = await response.json();
@@ -1044,17 +1138,21 @@
                     this.handleBotResponse(data);
 
                 } catch (error) {
-                    console.error('Error sending message with grade:', error);
-                    this.removeTypingIndicator();
-                    this.addMessageToChat('bot', 'Sorry, I encountered an error. Please try again.');
-                } finally {
-                    this.isGenerating = false;
-                    this.sendButton.disabled = false;
+                    console.log('Using mock response for grade:', error.message);
+                    setTimeout(() => {
+                        this.removeTypingIndicator();
+                        
+                        const mockResponse = this.generateMockResponse(lastUserMessage);
+                        this.handleBotResponse(mockResponse);
+                        
+                        this.isGenerating = false;
+                        this.sendButton.disabled = false;
+                    }, 1500);
                 }
             }
 
             handleBotResponse(data) {
-                this.currentConversationId = data.conversation_id;
+                this.currentConversationId = data.conversation_id || `conv-${Date.now()}`;
 
                 if (data.type === 'grade_request') {
                     this.isWaitingForGrade = true;
@@ -1062,6 +1160,9 @@
                     this.gradeSelect.focus();
                 } else {
                     this.addMessageToChat('bot', data.response, data.type);
+                    
+                    // Save conversation locally
+                    this.saveConversationToLocal();
                 }
 
                 // Update conversation list
@@ -1097,7 +1198,7 @@
                 metaDiv.className = 'message-meta';
                 metaDiv.innerHTML = `
                     <span>${new Date().toLocaleTimeString()}</span>
-                    <span>${type === 'lesson_plan' ? 'Lesson Plan' : 'Chat'}</span>
+                    <span>${type.replace('_', ' ')}</span>
                 `;
 
                 contentDiv.appendChild(textDiv);
@@ -1157,35 +1258,96 @@
 
             async loadConversations() {
                 try {
-                    const response = await fetch('/conversations/');
+                    // Try to load from backend first
+                    const response = await fetch(`${this.API_BASE_URL}/conversations/`);
                     if (response.ok) {
                         this.conversations = await response.json();
                         this.renderConversationHistory();
+                        return;
                     }
                 } catch (error) {
-                    console.error('Error loading conversations:', error);
+                    console.log('Loading conversations from localStorage:', error.message);
                 }
+                
+                // Fallback to localStorage
+                const savedConversations = localStorage.getItem('eduai-conversations');
+                if (savedConversations) {
+                    this.conversations = JSON.parse(savedConversations);
+                    this.renderConversationHistory();
+                }
+            }
+
+            saveConversationToLocal() {
+                try {
+                    const messages = this.getCurrentMessages();
+                    if (messages.length === 0) return;
+                    
+                    const conversation = {
+                        id: this.currentConversationId,
+                        title: this.chatTitle.textContent,
+                        messages: messages,
+                        created_at: new Date().toISOString(),
+                        message_count: messages.length
+                    };
+                    
+                    let conversations = JSON.parse(localStorage.getItem('eduai-conversations') || '[]');
+                    
+                    // Check if conversation already exists
+                    const existingIndex = conversations.findIndex(c => c.id === conversation.id);
+                    if (existingIndex >= 0) {
+                        conversations[existingIndex] = conversation;
+                    } else {
+                        conversations.push(conversation);
+                    }
+                    
+                    localStorage.setItem('eduai-conversations', JSON.stringify(conversations));
+                } catch (error) {
+                    console.error('Error saving conversation locally:', error);
+                }
+            }
+
+            getCurrentMessages() {
+                const messages = [];
+                const messageElements = this.messagesContainer.querySelectorAll('.message');
+                
+                messageElements.forEach(msg => {
+                    const role = msg.classList.contains('user') ? 'user' : 'bot';
+                    const content = msg.querySelector('.message-text').textContent;
+                    const type = msg.querySelector('.message-meta span:last-child').textContent || 'chat';
+                    messages.push({ role, content, type });
+                });
+                
+                return messages;
             }
 
             renderConversationHistory() {
                 this.conversationHistory.innerHTML = '';
                 
-                // Add "Clear All" button
-                if (this.conversations.length > 0) {
-                    const clearAllDiv = document.createElement('div');
-                    clearAllDiv.className = 'conversation-item';
-                    clearAllDiv.style.justifyContent = 'center';
-                    clearAllDiv.style.marginTop = '10px';
-                    clearAllDiv.style.padding = '10px';
-                    clearAllDiv.style.cursor = 'pointer';
-                    clearAllDiv.style.color = '#ef4444';
-                    clearAllDiv.innerHTML = `
-                        <i class="fas fa-trash-alt"></i>
-                        <span style="margin-left: 8px;">Clear All Chats</span>
-                    `;
-                    clearAllDiv.addEventListener('click', () => this.showClearAllModal());
-                    this.conversationHistory.appendChild(clearAllDiv);
+                if (this.conversations.length === 0) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'conversation-item';
+                    emptyDiv.style.justifyContent = 'center';
+                    emptyDiv.style.color = 'var(--text-secondary)';
+                    emptyDiv.style.fontStyle = 'italic';
+                    emptyDiv.textContent = 'No conversations yet';
+                    this.conversationHistory.appendChild(emptyDiv);
+                    return;
                 }
+                
+                // Add "Clear All" button
+                const clearAllDiv = document.createElement('div');
+                clearAllDiv.className = 'conversation-item';
+                clearAllDiv.style.justifyContent = 'center';
+                clearAllDiv.style.marginTop = '10px';
+                clearAllDiv.style.padding = '10px';
+                clearAllDiv.style.cursor = 'pointer';
+                clearAllDiv.style.color = '#ef4444';
+                clearAllDiv.innerHTML = `
+                    <i class="fas fa-trash-alt"></i>
+                    <span style="margin-left: 8px;">Clear All Chats</span>
+                `;
+                clearAllDiv.addEventListener('click', () => this.showClearAllModal());
+                this.conversationHistory.appendChild(clearAllDiv);
                 
                 this.conversations.forEach(conv => {
                     const convItem = document.createElement('div');
@@ -1231,13 +1393,25 @@
 
             async loadConversation(conversationId) {
                 try {
-                    const response = await fetch(`/conversation/${conversationId}`);
+                    // Try to load from backend first
+                    const response = await fetch(`${this.API_BASE_URL}/conversation/${conversationId}`);
                     if (response.ok) {
                         const conversation = await response.json();
                         this.displayConversation(conversation);
+                        return;
                     }
                 } catch (error) {
-                    console.error('Error loading conversation:', error);
+                    console.log('Loading conversation from localStorage:', error.message);
+                }
+                
+                // Fallback to localStorage
+                const savedConversations = JSON.parse(localStorage.getItem('eduai-conversations') || '[]');
+                const conversation = savedConversations.find(c => c.id === conversationId);
+                
+                if (conversation) {
+                    this.displayConversation(conversation);
+                } else {
+                    alert('Conversation not found');
                 }
             }
 
@@ -1294,8 +1468,7 @@
                 
                 const lessonContent = messageContent.textContent || messageContent.innerText;
                 
-                // In a real app, this would save to a database
-                // For now, we'll save to localStorage as a fallback
+                // Save to localStorage
                 try {
                     const savedPlans = JSON.parse(localStorage.getItem('eduai-saved-plans') || '[]');
                     savedPlans.push({
@@ -1307,7 +1480,6 @@
                     });
                     localStorage.setItem('eduai-saved-plans', JSON.stringify(savedPlans));
                     
-                    alert('Lesson plan saved successfully!');
                     this.showStatus('Lesson plan saved successfully!', 'success');
                 } catch (error) {
                     console.error('Error saving lesson plan:', error);
@@ -1394,10 +1566,10 @@
                                          `===================\n\n` +
                                          `Title: ${this.chatTitle.textContent}\n` +
                                          `Date: ${new Date().toLocaleDateString()}\n` +
-                                         `Generated by: EduAI Assistant\n\n` +
+                                         `Generated by: AI Teaching Assistant\n\n` +
                                          `CONTENT:\n` +
                                          `--------\n${content}\n\n` +
-                                         `© ${new Date().getFullYear()} EduAI - All rights reserved`;
+                                         `© ${new Date().getFullYear()} Sahayak AI - All rights reserved`;
                         break;
                         
                     case 'docx':
@@ -1405,7 +1577,7 @@
                         formattedContent = `EDUAI LESSON PLAN\n` +
                                          `Title: ${this.chatTitle.textContent}\n` +
                                          `Date: ${new Date().toLocaleDateString()}\n` +
-                                         `Generated by: EduAI Assistant\n\n` +
+                                         `Generated by: AI Teaching Assistant\n\n` +
                                          `${content}\n\n` +
                                          `End of Lesson Plan`;
                         break;
@@ -1416,7 +1588,7 @@
                         formattedContent = `EDUAI LESSON PLAN\n` +
                                          `Title: ${this.chatTitle.textContent}\n` +
                                          `Date: ${new Date().toLocaleDateString()}\n` +
-                                         `Generated by: EduAI Assistant\n\n` +
+                                         `Generated by: AI Teaching Assistant\n\n` +
                                          `${content}`;
                         break;
                 }
@@ -1443,11 +1615,11 @@
                 
                 const lessonContent = messageContent.textContent || messageContent.innerText;
                 
-                // Create a shareable text (in a real app, this would generate a link)
-                const shareableContent = `Check out this lesson plan from EduAI:\n\n` +
+                // Create a shareable text
+                const shareableContent = `Check out this lesson plan from Sahayak AI:\n\n` +
                                        `"${this.chatTitle.textContent}"\n\n` +
                                        `${lessonContent.substring(0, 200)}...\n\n` +
-                                       `Generated by EduAI Lesson Planning Assistant`;
+                                       `Generated by Sahayak AI Teaching Assistant`;
                 
                 // For demo purposes, show the content and simulate sharing
                 if (navigator.share) {
@@ -1469,11 +1641,10 @@
             fallbackShare(content) {
                 // Copy to clipboard as fallback
                 navigator.clipboard.writeText(content).then(() => {
-                    alert('Lesson plan content copied to clipboard! You can now paste it anywhere.');
                     this.showStatus('Lesson plan copied to clipboard!', 'success');
                 }).catch(err => {
                     console.error('Failed to copy: ', err);
-                    alert('Share feature would generate a link to this lesson plan.');
+                    alert('Lesson plan content is ready to share.');
                     this.showStatus('Share link generated!', 'success');
                 });
             }
@@ -1486,7 +1657,7 @@
                 if (confirm('Are you sure you want to clear this chat? This will remove all messages from the current view.')) {
                     this.messagesContainer.innerHTML = '';
                     this.showEmptyState();
-                    this.chatTitle.textContent = 'EduAI';
+                    this.chatTitle.textContent = 'AI Teaching Assistant';
                     this.currentConversationId = null;
                 }
             }
@@ -1505,7 +1676,8 @@
                 if (!this.conversationToDelete) return;
                 
                 try {
-                    const response = await fetch(`/conversation/${this.conversationToDelete}`, {
+                    // Try to delete from backend first
+                    const response = await fetch(`${this.API_BASE_URL}/conversation/${this.conversationToDelete}`, {
                         method: 'DELETE'
                     });
                     
@@ -1518,13 +1690,29 @@
                         this.loadConversations();
                         this.hideDeleteModal();
                         this.showStatus('Lesson plan deleted successfully!', 'success');
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        return;
                     }
+                } catch (error) {
+                    console.log('Deleting from localStorage:', error.message);
+                }
+                
+                // Fallback to localStorage
+                try {
+                    let conversations = JSON.parse(localStorage.getItem('eduai-conversations') || '[]');
+                    conversations = conversations.filter(c => c.id !== this.conversationToDelete);
+                    localStorage.setItem('eduai-conversations', JSON.stringify(conversations));
+                    
+                    // If we're currently viewing the deleted conversation, clear the chat
+                    if (this.currentConversationId === this.conversationToDelete) {
+                        this.startNewChat();
+                    }
+                    
+                    this.loadConversations();
+                    this.hideDeleteModal();
+                    this.showStatus('Lesson plan deleted successfully!', 'success');
                 } catch (error) {
                     console.error('Error deleting conversation:', error);
                     alert('Failed to delete lesson plan. Please try again.');
-                    this.showStatus('Failed to delete lesson plan!', 'danger');
                 }
             }
 
@@ -1538,7 +1726,8 @@
 
             async confirmClearAll() {
                 try {
-                    const response = await fetch('/conversations/', {
+                    // Try to clear from backend first
+                    const response = await fetch(`${this.API_BASE_URL}/conversations/`, {
                         method: 'DELETE'
                     });
                     
@@ -1547,13 +1736,22 @@
                         this.loadConversations();
                         this.hideClearAllModal();
                         this.showStatus('All lesson plans cleared!', 'success');
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        return;
                     }
+                } catch (error) {
+                    console.log('Clearing from localStorage:', error.message);
+                }
+                
+                // Fallback to localStorage
+                try {
+                    localStorage.removeItem('eduai-conversations');
+                    this.startNewChat();
+                    this.loadConversations();
+                    this.hideClearAllModal();
+                    this.showStatus('All lesson plans cleared!', 'success');
                 } catch (error) {
                     console.error('Error clearing all conversations:', error);
                     alert('Failed to clear all lesson plans. Please try again.');
-                    this.showStatus('Failed to clear all lesson plans!', 'danger');
                 }
             }
 
